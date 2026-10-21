@@ -1,0 +1,1484 @@
+{
+  "sdk_versao_pypi": "0.9.1",
+  "paginas": {
+    "sdk_python": {
+      "url": "https://documentation.botcity.dev/maestro/maestro-sdk/python/",
+      "tipo": "referencia",
+      "hash": "da0390a5f3abce68",
+      "estrutura": {
+        "botcity.maestro.sdk.BotMaestroSDK": {
+          "tipo": "classe",
+          "assinatura": "botcity.maestro.sdk.BotMaestroSDK",
+          "resumo": "",
+          "parametros": [],
+          "retorno": ""
+        },
+        "botcity.maestro.sdk.BotMaestroSDK.access_token": {
+          "tipo": "propriedade",
+          "assinatura": "access_token",
+          "resumo": "The access token",
+          "parametros": [],
+          "retorno": ""
+        },
+        "botcity.maestro.sdk.BotMaestroSDK.is_online": {
+          "tipo": "propriedade",
+          "assinatura": "is_online",
+          "resumo": "Whether or not the object is connected to the BotCity Orchestrator portal",
+          "parametros": [],
+          "retorno": ""
+        },
+        "botcity.maestro.sdk.BotMaestroSDK.organization": {
+          "tipo": "propriedade",
+          "assinatura": "organization",
+          "resumo": "The organization label",
+          "parametros": [],
+          "retorno": ""
+        },
+        "botcity.maestro.sdk.BotMaestroSDK.server": {
+          "tipo": "propriedade",
+          "assinatura": "server",
+          "resumo": "The server address",
+          "parametros": [],
+          "retorno": ""
+        },
+        "botcity.maestro.sdk.BotMaestroSDK.task_id": {
+          "tipo": "propriedade",
+          "assinatura": "task_id",
+          "resumo": "The Current Task ID",
+          "parametros": [],
+          "retorno": ""
+        },
+        "botcity.maestro.sdk.BotMaestroSDK.timeout": {
+          "tipo": "propriedade",
+          "assinatura": "timeout",
+          "resumo": "The timeout for the requests",
+          "parametros": [],
+          "retorno": ""
+        },
+        "botcity.maestro.sdk.BotMaestroSDK.version": {
+          "tipo": "propriedade",
+          "assinatura": "version",
+          "resumo": "The BotCity Maestro Backend version",
+          "parametros": [],
+          "retorno": ""
+        },
+        "botcity.maestro.sdk.BotMaestroSDK.__init__": {
+          "tipo": "metodo",
+          "assinatura": "__init__(self, server=None, login=None, key=None)",
+          "resumo": "Main class to interact with the BotMaestro web portal.",
+          "parametros": [
+            {
+              "nome": "server",
+              "tipo": "Optional[str]",
+              "padrao": "None",
+              "descricao": "The server IP or name"
+            },
+            {
+              "nome": "login",
+              "tipo": "Optional[str]",
+              "padrao": "None",
+              "descricao": "The username provided via server configuration. Available under Dev. Environment"
+            },
+            {
+              "nome": "key",
+              "tipo": "Optional[str]",
+              "padrao": "None",
+              "descricao": "The access key provided via server configuration. Available under Dev. Environment"
+            }
+          ],
+          "retorno": ""
+        },
+        "botcity.maestro.sdk.BotMaestroSDK.alert": {
+          "tipo": "metodo",
+          "assinatura": "alert(self, task_id, title, message, alert_type)",
+          "resumo": "Register an alert message on the BotMaestro portal.",
+          "parametros": [
+            {
+              "nome": "task_id",
+              "tipo": "str",
+              "padrao": "required",
+              "descricao": "The activity label"
+            },
+            {
+              "nome": "title",
+              "tipo": "str",
+              "padrao": "required",
+              "descricao": "A title associated with the alert message"
+            },
+            {
+              "nome": "message",
+              "tipo": "str",
+              "padrao": "required",
+              "descricao": "The alert message"
+            },
+            {
+              "nome": "alert_type",
+              "tipo": "AlertType",
+              "padrao": "required",
+              "descricao": "The alert type to be used. See AlertType"
+            }
+          ],
+          "retorno": "ServerMessage"
+        },
+        "botcity.maestro.sdk.BotMaestroSDK.create_credential": {
+          "tipo": "metodo",
+          "assinatura": "create_credential(self, label, key, value)",
+          "resumo": "Create credential in a credentials set",
+          "parametros": [
+            {
+              "nome": "label",
+              "tipo": "str",
+              "padrao": "required",
+              "descricao": "Credential set name"
+            },
+            {
+              "nome": "key",
+              "tipo": "str",
+              "padrao": "required",
+              "descricao": "Key name within the credential set"
+            },
+            {
+              "nome": "value",
+              "tipo": "",
+              "padrao": "required",
+              "descricao": "Credential value"
+            }
+          ],
+          "retorno": ""
+        },
+        "botcity.maestro.sdk.BotMaestroSDK.create_datapool": {
+          "tipo": "metodo",
+          "assinatura": "create_datapool(self, pool)",
+          "resumo": "Create a new datapool on the BotMaestro portal.",
+          "parametros": [
+            {
+              "nome": "pool",
+              "tipo": "DataPool",
+              "padrao": "required",
+              "descricao": "The DataPool DataPool instance."
+            }
+          ],
+          "retorno": "DataPool"
+        },
+        "botcity.maestro.sdk.BotMaestroSDK.create_task": {
+          "tipo": "metodo",
+          "assinatura": "create_task(self, activity_label, parameters, test=False, priority=0, min_execution_date=None)",
+          "resumo": "Creates a task to be executed on the BotMaestro portal.",
+          "parametros": [
+            {
+              "nome": "activity_label",
+              "tipo": "str",
+              "padrao": "required",
+              "descricao": "The activity unique identified."
+            },
+            {
+              "nome": "parameters",
+              "tipo": "Dict[str, object]",
+              "padrao": "required",
+              "descricao": "Dictionary with parameters and values for this task."
+            },
+            {
+              "nome": "test",
+              "tipo": "bool",
+              "padrao": "False",
+              "descricao": "Whether or not the task is a test."
+            },
+            {
+              "nome": "priority",
+              "tipo": "int",
+              "padrao": "0",
+              "descricao": "(Optional[int], optional) An integer from 0 to 10 to refer to execution priority."
+            },
+            {
+              "nome": "min_execution_date",
+              "tipo": "Optional[datetime.datetime]",
+              "padrao": "None",
+              "descricao": "Minimum execution date for the task."
+            }
+          ],
+          "retorno": "AutomationTask"
+        },
+        "botcity.maestro.sdk.BotMaestroSDK.delete_log": {
+          "tipo": "metodo",
+          "assinatura": "delete_log(self, activity_label)",
+          "resumo": "Fetch log information.",
+          "parametros": [
+            {
+              "nome": "activity_label",
+              "tipo": "str",
+              "padrao": "required",
+              "descricao": "The activity unique identifier."
+            }
+          ],
+          "retorno": "ServerMessage"
+        },
+        "botcity.maestro.sdk.BotMaestroSDK.error": {
+          "tipo": "metodo",
+          "assinatura": "error(self, task_id, exception, screenshot=None, attachments=None, tags=None)",
+          "resumo": "Create a new Error entry.",
+          "parametros": [
+            {
+              "nome": "task_id",
+              "tipo": "int",
+              "padrao": "required",
+              "descricao": "The task unique identifier."
+            },
+            {
+              "nome": "exception",
+              "tipo": "Exception",
+              "padrao": "required",
+              "descricao": "The exception object."
+            },
+            {
+              "nome": "screenshot",
+              "tipo": "Optional[str]",
+              "padrao": "None",
+              "descricao": "File path for a screenshot to be attached to the error. Defaults to None."
+            },
+            {
+              "nome": "attachments",
+              "tipo": "Optional[List[str]]",
+              "padrao": "None",
+              "descricao": "Additional files to be sent along with the error entry. Defaults to None."
+            },
+            {
+              "nome": "tags",
+              "tipo": "Optional[Dict[str, str]]",
+              "padrao": "None",
+              "descricao": "Dictionary with tags to be associated with the error entry. Defaults to None."
+            }
+          ],
+          "retorno": ""
+        },
+        "botcity.maestro.sdk.BotMaestroSDK.finish_task": {
+          "tipo": "metodo",
+          "assinatura": "finish_task(self, task_id, status, message='', total_items=None, processed_items=None, failed_items=None)",
+          "resumo": "Finishes a given task.",
+          "parametros": [
+            {
+              "nome": "task_id",
+              "tipo": "str",
+              "padrao": "required",
+              "descricao": "The task unique identifier."
+            },
+            {
+              "nome": "status",
+              "tipo": "AutomationTaskFinishStatus",
+              "padrao": "required",
+              "descricao": "The condition in which the task must be finished. See AutomationTaskFinishStatus"
+            },
+            {
+              "nome": "message",
+              "tipo": "str",
+              "padrao": "''",
+              "descricao": "A message to be associated with this action."
+            },
+            {
+              "nome": "total_items",
+              "tipo": "int",
+              "padrao": "None",
+              "descricao": "Total number of items processed by the task."
+            },
+            {
+              "nome": "processed_items",
+              "tipo": "int",
+              "padrao": "None",
+              "descricao": "Number items processed successfully by the task."
+            },
+            {
+              "nome": "failed_items",
+              "tipo": "int",
+              "padrao": "None",
+              "descricao": "Number items failed to be processed by the task."
+            }
+          ],
+          "retorno": "ServerMessage"
+        },
+        "botcity.maestro.sdk.BotMaestroSDK.get_artifact": {
+          "tipo": "metodo",
+          "assinatura": "get_artifact(self, artifact_id)",
+          "resumo": "Retrieve an artifact from the BotMaestro portal.",
+          "parametros": [
+            {
+              "nome": "artifact_id",
+              "tipo": "int",
+              "padrao": "required",
+              "descricao": "The artifact unique identifier."
+            }
+          ],
+          "retorno": "Tuple[str, bytes]"
+        },
+        "botcity.maestro.sdk.BotMaestroSDK.get_credential": {
+          "tipo": "metodo",
+          "assinatura": "get_credential(self, label, key)",
+          "resumo": "Get value in key inside credentials",
+          "parametros": [
+            {
+              "nome": "label",
+              "tipo": "str",
+              "padrao": "required",
+              "descricao": "Credential set name"
+            },
+            {
+              "nome": "key",
+              "tipo": "str",
+              "padrao": "required",
+              "descricao": "Key name within the credential set"
+            }
+          ],
+          "retorno": "str"
+        },
+        "botcity.maestro.sdk.BotMaestroSDK.get_datapool": {
+          "tipo": "metodo",
+          "assinatura": "get_datapool(self, label)",
+          "resumo": "Get datapool on the BotMaestro portal.",
+          "parametros": [
+            {
+              "nome": "label",
+              "tipo": "str",
+              "padrao": "required",
+              "descricao": "Label DataPool."
+            }
+          ],
+          "retorno": "DataPool"
+        },
+        "botcity.maestro.sdk.BotMaestroSDK.get_execution": {
+          "tipo": "metodo",
+          "assinatura": "get_execution(self, task_id=None)",
+          "resumo": "Fetch the BotExecution object for a given task.",
+          "parametros": [
+            {
+              "nome": "task_id",
+              "tipo": "Optional[str]",
+              "padrao": "None",
+              "descricao": "The task ID. Defaults to None."
+            }
+          ],
+          "retorno": "model.BotExecution"
+        },
+        "botcity.maestro.sdk.BotMaestroSDK.get_log": {
+          "tipo": "metodo",
+          "assinatura": "get_log(self, activity_label, date='')",
+          "resumo": "Fetch log information.",
+          "parametros": [
+            {
+              "nome": "activity_label",
+              "tipo": "str",
+              "padrao": "required",
+              "descricao": "The activity unique identifier."
+            },
+            {
+              "nome": "date",
+              "tipo": "Optional[str]",
+              "padrao": "''",
+              "descricao": "Initial date for log information in the format DD/MM/YYYY. If empty all information is retrieved."
+            }
+          ],
+          "retorno": "List[Dict[str, object]]"
+        },
+        "botcity.maestro.sdk.BotMaestroSDK.get_task": {
+          "tipo": "metodo",
+          "assinatura": "get_task(self, task_id)",
+          "resumo": "Return details about a given task.",
+          "parametros": [
+            {
+              "nome": "task_id",
+              "tipo": "str",
+              "padrao": "required",
+              "descricao": "The task unique identifier."
+            }
+          ],
+          "retorno": "AutomationTask"
+        },
+        "botcity.maestro.sdk.BotMaestroSDK.interrupt_task": {
+          "tipo": "metodo",
+          "assinatura": "interrupt_task(self, task_id)",
+          "resumo": "Request the interruption of a given task.",
+          "parametros": [
+            {
+              "nome": "task_id",
+              "tipo": "str",
+              "padrao": "required",
+              "descricao": "The task unique identifier."
+            }
+          ],
+          "retorno": "ServerMessage"
+        },
+        "botcity.maestro.sdk.BotMaestroSDK.list_artifacts": {
+          "tipo": "metodo",
+          "assinatura": "list_artifacts(self, days=7)",
+          "resumo": "List all artifacts available for the organization.",
+          "parametros": [],
+          "retorno": "List[botcity.maestro.model.Artifact]"
+        },
+        "botcity.maestro.sdk.BotMaestroSDK.login": {
+          "tipo": "metodo",
+          "assinatura": "login(self, server=None, login=None, key=None)",
+          "resumo": "Obtain an access token with the configured BotMaestro portal.",
+          "parametros": [
+            {
+              "nome": "server",
+              "tipo": "Optional[str]",
+              "padrao": "None",
+              "descricao": "The server IP or name"
+            },
+            {
+              "nome": "login",
+              "tipo": "Optional[str]",
+              "padrao": "None",
+              "descricao": "The username provided via server configuration. Available under Dev. Environment"
+            },
+            {
+              "nome": "key",
+              "tipo": "Optional[str]",
+              "padrao": "None",
+              "descricao": "The access key provided via server configuration. Available under Dev. Environment"
+            }
+          ],
+          "retorno": ""
+        },
+        "botcity.maestro.sdk.BotMaestroSDK.logoff": {
+          "tipo": "metodo",
+          "assinatura": "logoff(self)",
+          "resumo": "Revoke the access token used to communicate with the BotMaestro portal.",
+          "parametros": [],
+          "retorno": ""
+        },
+        "botcity.maestro.sdk.BotMaestroSDK.message": {
+          "tipo": "metodo",
+          "assinatura": "message(self, email, users, subject, body, msg_type, group=None)",
+          "resumo": "Send an email message to the list of email and users given.",
+          "parametros": [
+            {
+              "nome": "email",
+              "tipo": "List[str]",
+              "padrao": "required",
+              "descricao": "List of emails to receive the message."
+            },
+            {
+              "nome": "users",
+              "tipo": "List[str]",
+              "padrao": "required",
+              "descricao": "List of usernames registered on the BotMaestro portal to receive the message."
+            },
+            {
+              "nome": "subject",
+              "tipo": "str",
+              "padrao": "required",
+              "descricao": "The message subject."
+            },
+            {
+              "nome": "body",
+              "tipo": "str",
+              "padrao": "required",
+              "descricao": "The message body."
+            },
+            {
+              "nome": "msg_type",
+              "tipo": "MessageType",
+              "padrao": "required",
+              "descricao": "The message body type. See MessageType"
+            },
+            {
+              "nome": "group",
+              "tipo": "Optional[str]",
+              "padrao": "None",
+              "descricao": "The message group information."
+            }
+          ],
+          "retorno": "ServerMessage"
+        },
+        "botcity.maestro.sdk.BotMaestroSDK.new_log": {
+          "tipo": "metodo",
+          "assinatura": "new_log(self, activity_label, columns)",
+          "resumo": "Create a new log on the BotMaestro portal.",
+          "parametros": [
+            {
+              "nome": "activity_label",
+              "tipo": "str",
+              "padrao": "required",
+              "descricao": "The activity unique identifier."
+            },
+            {
+              "nome": "columns",
+              "tipo": "List[botcity.maestro.model.Column]",
+              "padrao": "required",
+              "descricao": "A list of Columns"
+            }
+          ],
+          "retorno": "ServerMessage"
+        },
+        "botcity.maestro.sdk.BotMaestroSDK.new_log_entry": {
+          "tipo": "metodo",
+          "assinatura": "new_log_entry(self, activity_label, values)",
+          "resumo": "Creates a new log entry.",
+          "parametros": [
+            {
+              "nome": "activity_label",
+              "tipo": "str",
+              "padrao": "required",
+              "descricao": "The activity unique identifier."
+            },
+            {
+              "nome": "values",
+              "tipo": "Dict[str, object]",
+              "padrao": "required",
+              "descricao": "Dictionary in which the key is the column label and value is the entry value."
+            }
+          ],
+          "retorno": "ServerMessage"
+        },
+        "botcity.maestro.sdk.BotMaestroSDK.post_artifact": {
+          "tipo": "metodo",
+          "assinatura": "post_artifact(self, task_id, artifact_name, filepath)",
+          "resumo": "Upload a new artifact into the BotMaestro portal.",
+          "parametros": [
+            {
+              "nome": "task_id",
+              "tipo": "int",
+              "padrao": "required",
+              "descricao": "The task unique identifier."
+            },
+            {
+              "nome": "artifact_name",
+              "tipo": "str",
+              "padrao": "required",
+              "descricao": "The name of the artifact to be displayed on the portal."
+            },
+            {
+              "nome": "filepath",
+              "tipo": "str",
+              "padrao": "required",
+              "descricao": "The file to be uploaded."
+            }
+          ],
+          "retorno": "ServerMessage"
+        },
+        "botcity.maestro.sdk.BotMaestroSDK.remove_credential": {
+          "tipo": "metodo",
+          "assinatura": "remove_credential(self, label, key)",
+          "resumo": "Removes a credential from the set",
+          "parametros": [
+            {
+              "nome": "label",
+              "tipo": "str",
+              "padrao": "required",
+              "descricao": "Credential set name"
+            },
+            {
+              "nome": "key",
+              "tipo": "str",
+              "padrao": "required",
+              "descricao": "Key name within the credential set"
+            }
+          ],
+          "retorno": ""
+        },
+        "botcity.maestro.sdk.BotMaestroSDK.restart_task": {
+          "tipo": "metodo",
+          "assinatura": "restart_task(self, task_id)",
+          "resumo": "Restarts a given task.",
+          "parametros": [
+            {
+              "nome": "task_id",
+              "tipo": "str",
+              "padrao": "required",
+              "descricao": "The task unique identifier."
+            }
+          ],
+          "retorno": "ServerMessage"
+        },
+        "botcity.maestro.sdk.BotMaestroSDK.update_credential": {
+          "tipo": "metodo",
+          "assinatura": "update_credential(self, label, key, new_value)",
+          "resumo": "Update a credential with a new value",
+          "parametros": [
+            {
+              "nome": "label",
+              "tipo": "str",
+              "padrao": "required",
+              "descricao": "Credential set name"
+            },
+            {
+              "nome": "key",
+              "tipo": "str",
+              "padrao": "required",
+              "descricao": "Key name within the credential set"
+            },
+            {
+              "nome": "new_value",
+              "tipo": "",
+              "padrao": "required",
+              "descricao": "Credential new value"
+            }
+          ],
+          "retorno": ""
+        },
+        "botcity.maestro.model.AlertType": {
+          "tipo": "classe",
+          "assinatura": "botcity.maestro.model.AlertType (str, Enum)",
+          "resumo": "Type of alerts to be emitted.",
+          "parametros": [],
+          "retorno": ""
+        },
+        "botcity.maestro.model.MessageType": {
+          "tipo": "classe",
+          "assinatura": "botcity.maestro.model.MessageType (str, Enum)",
+          "resumo": "Type of message body.",
+          "parametros": [],
+          "retorno": ""
+        },
+        "botcity.maestro.model.AutomationTaskState": {
+          "tipo": "classe",
+          "assinatura": "botcity.maestro.model.AutomationTaskState (str, Enum)",
+          "resumo": "State of a Task.",
+          "parametros": [],
+          "retorno": ""
+        },
+        "botcity.maestro.model.AutomationTaskFinishStatus": {
+          "tipo": "classe",
+          "assinatura": "botcity.maestro.model.AutomationTaskFinishStatus (str, Enum)",
+          "resumo": "Finish status of a task.",
+          "parametros": [],
+          "retorno": ""
+        },
+        "botcity.maestro.model.ServerMessageType": {
+          "tipo": "classe",
+          "assinatura": "botcity.maestro.model.ServerMessageType (str, Enum)",
+          "resumo": "The server message type.",
+          "parametros": [],
+          "retorno": ""
+        },
+        "botcity.maestro.model.ServerMessage": {
+          "tipo": "classe",
+          "assinatura": "botcity.maestro.model.ServerMessage",
+          "resumo": "Server response message.",
+          "parametros": [],
+          "retorno": ""
+        },
+        "botcity.maestro.model.ServerMessage.from_json": {
+          "tipo": "metodo",
+          "assinatura": "from_json(payload)",
+          "resumo": "Instantiate a ServerMessage object from a JSON payload obtained from the BotMaestro portal.",
+          "parametros": [
+            {
+              "nome": "payload",
+              "tipo": "str",
+              "padrao": "required",
+              "descricao": "A JSON string containing message and type."
+            }
+          ],
+          "retorno": "ServerMessage"
+        },
+        "botcity.maestro.model.ServerMessage.to_json": {
+          "tipo": "metodo",
+          "assinatura": "to_json(self)",
+          "resumo": "Returns:",
+          "parametros": [],
+          "retorno": "str"
+        },
+        "botcity.maestro.model.AutomationTask": {
+          "tipo": "classe",
+          "assinatura": "botcity.maestro.model.AutomationTask",
+          "resumo": "Automation Task.",
+          "parametros": [],
+          "retorno": ""
+        },
+        "botcity.maestro.model.AutomationTask.from_json": {
+          "tipo": "metodo",
+          "assinatura": "from_json(payload)",
+          "resumo": "Instantiate a AutomationTask object from a JSON payload obtained from the BotMaestro portal.",
+          "parametros": [
+            {
+              "nome": "payload",
+              "tipo": "str",
+              "padrao": "required",
+              "descricao": "A JSON string containing the required metadata."
+            }
+          ],
+          "retorno": "AutomationTask"
+        },
+        "botcity.maestro.model.AutomationTask.is_interrupted": {
+          "tipo": "metodo",
+          "assinatura": "is_interrupted(self)",
+          "resumo": "Whether or not this task received an interrupt request.",
+          "parametros": [],
+          "retorno": "bool"
+        },
+        "botcity.maestro.model.AutomationTask.to_json": {
+          "tipo": "metodo",
+          "assinatura": "to_json(self)",
+          "resumo": "Returns:",
+          "parametros": [],
+          "retorno": "str"
+        },
+        "botcity.maestro.model.Artifact": {
+          "tipo": "classe",
+          "assinatura": "botcity.maestro.model.Artifact",
+          "resumo": "Artifact.",
+          "parametros": [],
+          "retorno": ""
+        },
+        "botcity.maestro.model.Artifact.from_dict": {
+          "tipo": "metodo",
+          "assinatura": "from_dict(data)",
+          "resumo": "Instantiate a Artifact object from a dict payload obtained from the BotMaestro portal.",
+          "parametros": [
+            {
+              "nome": "data",
+              "tipo": "Dict[str, Any]",
+              "padrao": "required",
+              "descricao": "A dictionary containing the required metadata."
+            }
+          ],
+          "retorno": "Artifact"
+        },
+        "botcity.maestro.model.Artifact.from_json": {
+          "tipo": "metodo",
+          "assinatura": "from_json(payload)",
+          "resumo": "Instantiate a Artifact object from a JSON payload obtained from the BotMaestro portal.",
+          "parametros": [
+            {
+              "nome": "payload",
+              "tipo": "str",
+              "padrao": "required",
+              "descricao": "A JSON string containing the required metadata."
+            }
+          ],
+          "retorno": "Artifact"
+        },
+        "botcity.maestro.model.Artifact.to_json": {
+          "tipo": "metodo",
+          "assinatura": "to_json(self)",
+          "resumo": "Returns:",
+          "parametros": [],
+          "retorno": "str"
+        },
+        "botcity.maestro.model.Column": {
+          "tipo": "classe",
+          "assinatura": "botcity.maestro.model.Column",
+          "resumo": "Representation of a Log column.",
+          "parametros": [],
+          "retorno": ""
+        },
+        "botcity.maestro.model.BotExecution": {
+          "tipo": "classe",
+          "assinatura": "botcity.maestro.model.BotExecution",
+          "resumo": "Bot execution parameters.",
+          "parametros": [],
+          "retorno": ""
+        },
+        "botcity.maestro.datapool.datapool.DataPool": {
+          "tipo": "classe",
+          "assinatura": "botcity.maestro.datapool.datapool.DataPool",
+          "resumo": "DataPool(label: str, name: str = None, default_automation: str = None, consumption_policy: str = , trigger: str = , schema: List[botcity.maestro.datapool.datapool.SchemaField] = , auto_retry: bool = True, max_auto_retry: int = 0, abort_on_error: bool = True, max_errors_before_inactive: int = 0, enable_processing_time: bool = True, item_max_processing_time: int = 0, datapool_id: str = None, maestro: 'BotMaestroSDK' = None, active: bool = True, repository_label: str = 'DEFAULT')",
+          "parametros": [],
+          "retorno": ""
+        },
+        "botcity.maestro.datapool.datapool.DataPool.activate": {
+          "tipo": "metodo",
+          "assinatura": "activate(self)",
+          "resumo": "Enables the DataPool in Maestro. Returns: None",
+          "parametros": [],
+          "retorno": ""
+        },
+        "botcity.maestro.datapool.datapool.DataPool.cancel_entry": {
+          "tipo": "metodo",
+          "assinatura": "cancel_entry(self, entry_id, finish_message='')",
+          "resumo": "Cancel an entry in the DataPool by its ID.",
+          "parametros": [
+            {
+              "nome": "entry_id",
+              "tipo": "str",
+              "padrao": "required",
+              "descricao": "The ID of the entry to cancel."
+            },
+            {
+              "nome": "finish_message",
+              "tipo": "Optional, str",
+              "padrao": "''",
+              "descricao": "A message to be associated with this action."
+            }
+          ],
+          "retorno": "DataPoolEntry"
+        },
+        "botcity.maestro.datapool.datapool.DataPool.create_entry": {
+          "tipo": "metodo",
+          "assinatura": "create_entry(self, entry)",
+          "resumo": "Create an entry by DataPool",
+          "parametros": [
+            {
+              "nome": "entry",
+              "tipo": "DataPoolEntry",
+              "padrao": "required",
+              "descricao": "Instance of DataPoolEntry"
+            }
+          ],
+          "retorno": "DataPoolEntry"
+        },
+        "botcity.maestro.datapool.datapool.DataPool.deactivate": {
+          "tipo": "metodo",
+          "assinatura": "deactivate(self)",
+          "resumo": "Disable DataPool in Maestro. Returns: None",
+          "parametros": [],
+          "retorno": ""
+        },
+        "botcity.maestro.datapool.datapool.DataPool.delete_entry": {
+          "tipo": "metodo",
+          "assinatura": "delete_entry(self, entry_id)",
+          "resumo": "Delete an entry in the DataPool by its ID.",
+          "parametros": [
+            {
+              "nome": "entry_id",
+              "tipo": "str",
+              "padrao": "required",
+              "descricao": "The ID of the entry to delete."
+            }
+          ],
+          "retorno": ""
+        },
+        "botcity.maestro.datapool.datapool.DataPool.from_json": {
+          "tipo": "metodo",
+          "assinatura": "from_json(payload, maestro)",
+          "resumo": "Instantiate class by payload to request maestro.",
+          "parametros": [
+            {
+              "nome": "payload",
+              "tipo": "bytes",
+              "padrao": "required",
+              "descricao": "Response to maestro."
+            },
+            {
+              "nome": "maestro",
+              "tipo": "BotMaestroSDK",
+              "padrao": "required",
+              "descricao": "Instance maestro class."
+            }
+          ],
+          "retorno": "DataPool"
+        },
+        "botcity.maestro.datapool.datapool.DataPool.get_entry": {
+          "tipo": "metodo",
+          "assinatura": "get_entry(self, entry_id)",
+          "resumo": "Fetch an entry from the DataPool by its ID.",
+          "parametros": [
+            {
+              "nome": "entry_id",
+              "tipo": "str",
+              "padrao": "required",
+              "descricao": "The ID of the entry to fetch."
+            }
+          ],
+          "retorno": "DataPoolEntry"
+        },
+        "botcity.maestro.datapool.datapool.DataPool.has_next": {
+          "tipo": "metodo",
+          "assinatura": "has_next(self)",
+          "resumo": "Checks if there are pending items in the DataPool.",
+          "parametros": [],
+          "retorno": "bool"
+        },
+        "botcity.maestro.datapool.datapool.DataPool.is_active": {
+          "tipo": "metodo",
+          "assinatura": "is_active(self)",
+          "resumo": "Check if the DataPool is active. Returns: bool",
+          "parametros": [],
+          "retorno": ""
+        },
+        "botcity.maestro.datapool.datapool.DataPool.is_empty": {
+          "tipo": "metodo",
+          "assinatura": "is_empty(self)",
+          "resumo": "Checks if the DataPool is empty.",
+          "parametros": [],
+          "retorno": "bool"
+        },
+        "botcity.maestro.datapool.datapool.DataPool.next": {
+          "tipo": "metodo",
+          "assinatura": "next(self, task_id)",
+          "resumo": "Fetch the next pending entry.",
+          "parametros": [
+            {
+              "nome": "task_id",
+              "tipo": "Optional[str]",
+              "padrao": "required",
+              "descricao": "TaskId to be associated with this entry."
+            }
+          ],
+          "retorno": "DataPoolEntry or None"
+        },
+        "botcity.maestro.datapool.datapool.DataPool.summary": {
+          "tipo": "metodo",
+          "assinatura": "summary(self)",
+          "resumo": "Get the DataPool counters. Returns: dict",
+          "parametros": [],
+          "retorno": ""
+        },
+        "botcity.maestro.datapool.datapool.DataPool.to_dict": {
+          "tipo": "metodo",
+          "assinatura": "to_dict(self)",
+          "resumo": "Get all properties class in dict.",
+          "parametros": [],
+          "retorno": ""
+        },
+        "botcity.maestro.datapool.entry.DataPoolEntry": {
+          "tipo": "classe",
+          "assinatura": "botcity.maestro.datapool.entry.DataPoolEntry",
+          "resumo": "DataPoolEntry(priority: int = 0, values: dict = , datapool_label: str = None, state: str = None, entry_id: str = None, unique_key: str = None, display_value: str = None, message: str = None, error_type: str = None, retry_index: int = 0, runner: str = None, task_id: int = None, parent: str = None, child: str = None, date_register: str = None, date_processing: str = None, date_finished: str = None, maestro: 'BotMaestroSDK' = None)",
+          "parametros": [],
+          "retorno": ""
+        },
+        "botcity.maestro.datapool.entry.DataPoolEntry.get_value": {
+          "tipo": "metodo",
+          "assinatura": "get_value(self, key, default=None)",
+          "resumo": "Get value by key.",
+          "parametros": [
+            {
+              "nome": "key",
+              "tipo": "str",
+              "padrao": "required",
+              "descricao": "Key to get value."
+            },
+            {
+              "nome": "default",
+              "tipo": "Optional[str]",
+              "padrao": "None",
+              "descricao": "Default value if key not exists."
+            }
+          ],
+          "retorno": ""
+        },
+        "botcity.maestro.datapool.entry.DataPoolEntry.json_to_update": {
+          "tipo": "metodo",
+          "assinatura": "json_to_update(self)",
+          "resumo": "Create Json by properties to update.",
+          "parametros": [],
+          "retorno": ""
+        },
+        "botcity.maestro.datapool.entry.DataPoolEntry.report_done": {
+          "tipo": "metodo",
+          "assinatura": "report_done(self, finish_message='')",
+          "resumo": "Report state DONE to DataPool Entry.",
+          "parametros": [
+            {
+              "nome": "finish_message",
+              "tipo": "Optional, str",
+              "padrao": "''",
+              "descricao": "A message to be associated with this action."
+            }
+          ],
+          "retorno": ""
+        },
+        "botcity.maestro.datapool.entry.DataPoolEntry.report_error": {
+          "tipo": "metodo",
+          "assinatura": "report_error(self, error_type=<ErrorType.SYSTEM: 'SYSTEM'>, finish_message='')",
+          "resumo": "Report state ERROR to DataPool Entry.",
+          "parametros": [
+            {
+              "nome": "error_type",
+              "tipo": "Optional, ErrorType",
+              "padrao": "<ErrorType.SYSTEM: 'SYSTEM'>",
+              "descricao": "The type of error. Defaults to 'SYSTEM' error."
+            },
+            {
+              "nome": "finish_message",
+              "tipo": "Optional, str",
+              "padrao": "''",
+              "descricao": "A message to be associated with this action."
+            }
+          ],
+          "retorno": ""
+        },
+        "botcity.maestro.datapool.entry.DataPoolEntry.save": {
+          "tipo": "metodo",
+          "assinatura": "save(self)",
+          "resumo": "Update Entry in DataPool.",
+          "parametros": [],
+          "retorno": ""
+        },
+        "botcity.maestro.datapool.entry.DataPoolEntry.to_json": {
+          "tipo": "metodo",
+          "assinatura": "to_json(self)",
+          "resumo": "Get properties class in dict.",
+          "parametros": [],
+          "retorno": ""
+        },
+        "botcity.maestro.datapool.entry.DataPoolEntry.update_from_json": {
+          "tipo": "metodo",
+          "assinatura": "update_from_json(self, payload)",
+          "resumo": "Update properties by response endpoint Maestro.",
+          "parametros": [
+            {
+              "nome": "payload",
+              "tipo": "bytes",
+              "padrao": "required",
+              "descricao": "Response to endpoint Maestro."
+            }
+          ],
+          "retorno": ""
+        }
+      }
+    },
+    "api": {
+      "url": "https://documentation.botcity.dev/maestro/maestro-api/maestro-api/",
+      "tipo": "swagger",
+      "hash": "9528910296fdb057",
+      "estrutura": {
+        "spec_url": "https://developers.botcity.dev/v3/api-docs"
+      }
+    },
+    "setup": {
+      "url": "https://documentation.botcity.dev/maestro/maestro-sdk/setup/",
+      "tipo": "guia",
+      "hash": "7e2647dc30ef5f5d",
+      "estrutura": [
+        {
+          "secao": "Import the SDK",
+          "codigo": "# Importing the package\nfrom botcity.maestro import *"
+        },
+        {
+          "secao": "Create a new Maestro client",
+          "codigo": "# Instantiating a Maestro SDK client\nmaestro = BotMaestroSDK()"
+        },
+        {
+          "secao": "Local execution",
+          "codigo": "maestro.login(\n    server=\"<SERVER>\", \n    login=\"<LOGIN>\", \n    key=\"<KEY>\"\n)"
+        },
+        {
+          "secao": "Execution via Runner",
+          "codigo": "# Getting the arguments passed by the Runner\nmaestro = BotMaestroSDK.from_sys_args()"
+        },
+        {
+          "secao": "Get the current execution reference",
+          "codigo": "# Maestro SDK instance\nmaestro = BotMaestroSDK.from_sys_args()\n# Fetching the details of the current task being executed\nexecution = maestro.get_execution()\n\n# Information about the task being executed\nprint(f\"Task ID is: {execution.task_id}\")\nprint(f\"Task Parameters are: {execution.parameters}\")"
+        }
+      ]
+    },
+    "tarefas": {
+      "url": "https://documentation.botcity.dev/maestro/maestro-sdk/task/",
+      "tipo": "guia",
+      "hash": "0d14ab4fca285a5c",
+      "estrutura": [
+        {
+          "secao": "Create a task",
+          "codigo": "from datetime import datetime\n\ndate = datetime.strptime(\"09/03/2026 00:00\", \"%d/%m/%Y %H:%M\")\nparams = {}\ntask = maestro.create_task(\n    activity_label=\"automationLabel\",\n    parameters=params,\n    test=False,\n    priority=5,\n    min_execution_date= date\n)"
+        },
+        {
+          "secao": "Interrupt a task",
+          "codigo": "maestro.interrupt_task(task_id=<TASK_ID>)"
+        },
+        {
+          "secao": "Implementation suggestion",
+          "codigo": "while not maestro.get_task(task_id=<TASK_ID>).is_interrupted():\n    # Continuing to process items\n    print(\"Processing items\")\n    ...\nprint(\"An interruption was requested\")"
+        },
+        {
+          "secao": "Define data",
+          "codigo": "maestro.finish_task(\n    task_id=<TASK_ID>,\n    status=AutomationTaskFinishStatus.SUCCESS,\n    message=\"Task was completed successfully.\",\n    total_items=100,\n    processed_items=90,\n    failed_items=10\n)"
+        },
+        {
+          "secao": "Use the ID of a specific task",
+          "codigo": "task = maestro.get_task(\"<TASK_ID>\")"
+        },
+        {
+          "secao": "Get the current task ID",
+          "codigo": "# Fetching the details of the task currently being executed\nexecution = maestro.get_execution()\n\n# Information about the task being executed\nprint(f\"Task ID is: {execution.task_id}\")\nprint(f\"Task Parameters are: {execution.parameters}\")"
+        },
+        {
+          "secao": "Access the parameters of a task",
+          "codigo": "# Instantiating the Maestro SDK\nmaestro = BotMaestroSDK.from_sys_args()\n# Fetching the details of the task currently being executed\nexecution = maestro.get_execution()\n\n# Getting parameter by label\nparameter1 = execution.parameters.get(\"<PARAMETER_LABEL1>\")\nparameter2 = execution.parameters.get(\"<PARAMETER_LABEL2>\")"
+        }
+      ]
+    },
+    "logs": {
+      "url": "https://documentation.botcity.dev/maestro/maestro-sdk/log/",
+      "tipo": "guia",
+      "hash": "e4a7505c8c37996b",
+      "estrutura": [
+        {
+          "secao": "Create a log",
+          "codigo": "# Create a list of columns\ncolumns = [\n    Column(name=\"# Records\", label=\"records\"),\n    Column(name=\"Status\", label=\"status\"),\n]\n\n# Create a new log\nmaestro.new_log(\n    activity_label=\"logLabel\",\n    columns=columns\n)"
+        },
+        {
+          "secao": "Create Log entries",
+          "codigo": "maestro.new_log_entry(\n    activity_label=\"logLabel\",\n    values = {\n        \"records\": \"10\",\n        \"status\": \"SUCCESS\"\n    }\n)"
+        },
+        {
+          "secao": "Fetch Log data",
+          "codigo": "# Get the start date as 30 days ago\ninstant = (datetime.datetime.now() - datetime.timedelta(days=30))\ndate = instant.strftime(\"%d/%m/%Y\")\n\n# Get the log data\ndata = maestro.get_log(activity_label=\"logLabel\", date=date)"
+        },
+        {
+          "secao": "Download as CSV",
+          "codigo": "# Not yet implemented"
+        },
+        {
+          "secao": "Delete an entire Log",
+          "codigo": "maestro.delete_log(activity_label=\"logLabel\")"
+        }
+      ]
+    },
+    "alertas": {
+      "url": "https://documentation.botcity.dev/maestro/maestro-sdk/alerts-and-messages/",
+      "tipo": "guia",
+      "hash": "cf1c5fe84743d2d5",
+      "estrutura": [
+        {
+          "secao": "Emit an Alert",
+          "codigo": "maestro.alert(\n    task_id=<TASK_ID>,\n    title=\"Information alert\",\n    message=\"This is an information alert\",\n    alert_type=AlertType.INFO\n)"
+        },
+        {
+          "secao": "Emit a Message",
+          "codigo": "# List of emails, if not using, pass an empty list\nemails = [\"your_email@your_email.com\"]\n# List of users, if not using, pass an empty list\nusers = [\"orchestrator_user1\", \"orchestrator_user2\"]\n\n# Email subject and body\nsubject = \"Message subject\"\nemail_body = \"This is the message content.\"\n\nmaestro.message(\n    email=emails, \n    users=users, \n    subject=subject, \n    body=email_body, \n    msg_type=MessageType.TEXT,\n    )"
+        }
+      ]
+    },
+    "credenciais": {
+      "url": "https://documentation.botcity.dev/maestro/maestro-sdk/credential/",
+      "tipo": "guia",
+      "hash": "949db2834b2e9464",
+      "estrutura": [
+        {
+          "secao": "Create credential vaults",
+          "codigo": "maestro.create_credential(label=\"vault\", key=\"key1\", value=\"key_value_1\")\nmaestro.create_credential(label=\"vault\", key=\"key2\", value=\"key_value_2\")"
+        },
+        {
+          "secao": "Get credential from the Orchestrator",
+          "codigo": "key1 = maestro.get_credential(label=\"vault\", key=\"key1\")"
+        },
+        {
+          "secao": "Update values",
+          "codigo": "maestro.update_credential(label=\"vault\", key=\"key1\", new_value=\"new_key_value_1\")"
+        },
+        {
+          "secao": "Remove a credential key from the Orchestrator",
+          "codigo": "maestro.remove_credential(label=\"vault\", key=\"key1\")"
+        }
+      ]
+    },
+    "datapool": {
+      "url": "https://documentation.botcity.dev/maestro/maestro-sdk/datapool/",
+      "tipo": "guia",
+      "hash": "899e669b4677d487",
+      "estrutura": [
+        {
+          "secao": "Create a Datapool",
+          "codigo": "# Schema example with fields: 'id', 'name' and 'price'\n\nproduct_id = SchemaField(\n    label=\"id\",\n    type=FieldType.TEXT,\n    unique_id=True,\n    display_value=True\n)\n\nproduct_name = SchemaField(\n    label=\"name\",\n    type=FieldType.TEXT,\n    unique_id=False,\n    display_value=True\n)\n\nproduct_price = SchemaField(\n    label=\"price\",\n    type=FieldType.DOUBLE,\n    unique_id=False,\n    display_value=False\n)\n\n# List with the fields\nschema = [product_id, product_name, product_price]\n\n# Creating the Datapool object\ndatapool = DataPool(\n    label=\"ProductsData\",\n    name=\"ProductsData\",\n    max_auto_retry=2,\n    max_errors_before_inactive=5,\n    item_max_processing_time=3,\n    schema=schema\n)\n\n# Creating the Datapool structure in the Orchestrator\nmaestro.create_datapool(datapool)"
+        },
+        {
+          "secao": "Datapool operations",
+          "codigo": "# Getting the Datapool reference\ndatapool = maestro.get_datapool(\"ProductsData\")\n\n# Checking if the Datapool is active\nprint(datapool.is_active())\n\n# Checking if the Datapool has no pending items\nprint(datapool.is_empty())\n\n# Checking if there is a next pending item\nprint(datapool.has_next())\n\n# Marking the Datapool as active\ndatapool.activate()\n\n# Marking the Datapool as inactive\ndatapool.deactivate()"
+        },
+        {
+          "secao": "Add new items",
+          "codigo": "# Instantiating a new Datapool item based on the defined Schema\nnew_item = DataPoolEntry(\n    values={\n        \"id\": \"Electronic#001\"\n        \"name\": \"Smartphone\",\n        \"price\": \"2000\"\n    }\n)\n\n# Getting the Datapool reference\ndatapool = maestro.get_datapool(\"ProductsData\")\n\n# Adding a new item\ndatapool.create_entry(new_item)"
+        },
+        {
+          "secao": "Cancel items",
+          "codigo": "# Getting the Datapool reference\ndatapool = maestro.get_datapool(\"ProductsData\")\n\n# Cancelling an item that is pending in the queue\ndatapool.cancel_entry(\n    entry_id=\"<ENTRY_ID>\",\n    finish_message=\"Item with missing data\"\n)"
+        },
+        {
+          "secao": "Delete items",
+          "codigo": "# Getting the Datapool reference\ndatapool = maestro.get_datapool(\"ProductsData\")\n\n# Removing an item from the queue\ndatapool.delete_entry(entry_id=\"<ENTRY_ID>\")"
+        },
+        {
+          "secao": "Get items",
+          "codigo": "# Getting the Datapool reference\ndatapool = maestro.get_datapool(\"ProductsData\")\n\n# Gets the next item from the Datapool\nitem_1 = datapool.next(task_id=<TASK_ID>)\n\n# Using the get_entry() method we can also get an item by its ID\nitem_2 = datapool.get_entry(entry_id=\"<ENTRY_ID>\")"
+        },
+        {
+          "secao": "Access item values",
+          "codigo": "# Getting the value of a specific field from the item\nitem_data = item[\"data-label\"]\n\n# Using the get_value() method will have the same effect\nitem_data = item.get_value(\"data-label\")"
+        },
+        {
+          "secao": "Report the completion state",
+          "codigo": "# Gets the next available item from the Datapool\nitem = datapool.next(task_id=<TASK_ID>)\n\n# Finalizing as 'COMPLETED' after processing\nitem.report_done(finish_message=\"Processed successfully!\")\n\n# Finalizing item processing indicating a system error\nitem.report_error(error_type=ErrorType.SYSTEM, finish_message=\"System unavailable.\")\n\n# Finalizing item processing indicating a business error\nitem.report_error(error_type=ErrorType.BUSINESS, finish_message=\"Invalid data.\")"
+        },
+        {
+          "secao": "Suggested Datapool consumption structure",
+          "codigo": "# Consuming the next available item and reporting the completion state at the end\ndatapool = maestro.get_datapool(label=\"Items-To-Process\")\n\nwhile datapool.has_next():\n    # Gets the next item from the Datapool\n    item = datapool.next(task_id=<TASK_ID>)\n    if item is None:\n        # The item could be 'None' if another process consumed it first\n        break\n\n    try:\n        # Processing the item...\n\n        # Finalizing as 'COMPLETED' after processing\n        item.report_done(finish_message=\"Processed successfully!\")\n\n    except Exception:\n        # Finalizing item processing as 'ERROR'\n        item.report_error(finish_message=\"Processing failed.\")"
+        }
+      ]
+    },
+    "erros": {
+      "url": "https://documentation.botcity.dev/maestro/maestro-sdk/error/",
+      "tipo": "guia",
+      "hash": "58abf783e316aee7",
+      "estrutura": [
+        {
+          "secao": "Create a simple error",
+          "codigo": "try:\n    div = 0 / 0\nexcept Exception as error:\n    maestro.error(\n        task_id=<TASK_ID>, \n        exception=error\n    )"
+        },
+        {
+          "secao": "Screenshot",
+          "codigo": "try:\n    div = 0 / 0\nexcept Exception as error:\n    file_path = '/home/test/screenshot.png'\n    maestro.error(\n        task_id=<TASK_ID>, \n        exception=error, \n        screenshot=file_path\n    )"
+        },
+        {
+          "secao": "Customizable tags",
+          "codigo": "try:\n    div = 0 / 0\nexcept Exception as error:\n    tags = {\n        \"key_1\": \"value_1\",\n        \"key_2\": \"value_2\",\n        \"key_3\": \"value_3\",\n    }\n\n    maestro.error(\n        task_id=<TASK_ID>, \n        exception=error, \n        tags=tags\n    )"
+        },
+        {
+          "secao": "File attachments",
+          "codigo": "try:\n    div = 0 / 0\nexcept Exception as error:\n    attachments = [\n        '/home/test/error.png',\n        '/home/test/process.log',\n        '/home/test/test.txt'\n    ]\n    maestro.error(\n        task_id=<TASK_ID>, \n        exception=error, \n        attachments=attachments\n    )"
+        }
+      ]
+    },
+    "artefatos": {
+      "url": "https://documentation.botcity.dev/maestro/maestro-sdk/result-files/",
+      "tipo": "guia",
+      "hash": "e7f075bc63b7c516",
+      "estrutura": [
+        {
+          "secao": "Send an artifact",
+          "codigo": "maestro.post_artifact(\n    task_id=<TASK_ID>,\n    artifact_name=\"My artifact.txt\",\n    filepath=\"resources/artifact.txt\"\n)"
+        },
+        {
+          "secao": "Listing all artifacts",
+          "codigo": "artifact = maestro.list_artifacts()"
+        },
+        {
+          "secao": "Download an artifact",
+          "codigo": "# Define artifact ID\nartifact_id = \"<ARTIFACT_ID>\"\n\n# Get artifact name and content\nname, content = maestro.get_artifact(artifact_id=artifact_id)\n\n# Write to disk\nwith open(name, \"wb\") as file:\n    file.write(content)"
+        }
+      ]
+    }
+  },
+  "spec": {
+    "url": "https://developers.botcity.dev/v3/api-docs",
+    "hash": "735d920883052766",
+    "operacoes": {
+      "PUT /api/v2/activity/{automationLabel}/priority/{priority}": "75f5b35cd5675a31",
+      "POST /private/audit": "32238572e2353ea7",
+      "GET /api/v2/task": "e5518e12efc2775f",
+      "POST /api/v2/task": "0b7502dfb238acab",
+      "GET /api/v2/task/{taskId}": "8a22b6107b9fffc5",
+      "POST /api/v2/task/{taskId}": "3bc970593d4c046c",
+      "DELETE /api/v2/task/{taskId}": "d3d99971b2206fdd",
+      "POST /api/v2/task/{taskId}/duplicate": "a8fe865edaded232",
+      "GET /api/v2/scheduling": "ea2bd524d0bc9f37",
+      "POST /api/v2/scheduling": "9c372bbbeae086bf",
+      "GET /api/v2/scheduling/{schedulingId}": "efdaa1c10a847305",
+      "POST /api/v2/scheduling/{schedulingId}": "26bddbe54382d259",
+      "DELETE /api/v2/scheduling/{schedulingId}": "447f7efc28cfe817",
+      "POST /api/v2/scheduling/validate-cron": "7bc71bfd199940bf",
+      "POST /api/v2/message": "49546ee12fe84cca",
+      "POST /api/v2/machine": "a0ad151eac6920d5",
+      "GET /api/v2/machine/{machineId}": "6d88b45a05f4974f",
+      "POST /api/v2/machine/{machineId}": "d89184377c339e5a",
+      "DELETE /api/v2/machine/{machineId}": "8fca89f6ec6427df",
+      "GET /api/v2/machine/screenshot/{machineId}": "6ef6383b48381f4e",
+      "POST /api/v2/machine/screenshot/{machineId}": "4ad1979bf932398c",
+      "GET /api/v2/machine/log/{machineId}": "93700b62542af4a8",
+      "POST /api/v2/machine/log/{machineId}": "50871e3e2ddcee2c",
+      "POST /api/v2/log/studio": "3c4a0f4e30d05a87",
+      "POST /api/v2/log/event": "bc7cd0d43e0b481f",
+      "POST /api/v2/event": "4e5c2b8c3bcb8c5e",
+      "GET /api/v2/error": "40aba876c4cdabf9",
+      "POST /api/v2/error": "e913102272d7ae90",
+      "GET /api/v2/error/{id}/screenshot": "0954cad3ecce58c1",
+      "POST /api/v2/error/{id}/screenshot": "d2191b077b94b7b3",
+      "POST /api/v2/error/{id}/attachments": "ceccb0af0c3923ba",
+      "GET /api/v2/credential": "5ffb4d049eb41cb8",
+      "POST /api/v2/credential": "753aafd671d08839",
+      "GET /api/v2/credential/{label}": "6977a549be719db5",
+      "POST /api/v2/credential/{label}": "fb4502cbdaae0847",
+      "DELETE /api/v2/credential/{label}": "2ebd86903095a6bd",
+      "POST /api/v2/credential/{label}/key": "c6254e8f60020359",
+      "GET /api/v2/bot": "4a197b17ca2364b8",
+      "POST /api/v2/bot": "b5e882705407c52f",
+      "POST /api/v2/bot/upload/{botId}/version/{botVersion}": "c294693f9163d189",
+      "POST /api/v2/bot/update": "a5aef9aa1d2b64e0",
+      "POST /api/v2/bot/release": "57a5b6038b8e03bc",
+      "GET /api/v2/audit": "5c8b26498ab4e9c0",
+      "POST /api/v2/audit": "6938ff7ac05186e5",
+      "GET /api/v2/artifact": "440047b5b775b621",
+      "POST /api/v2/artifact": "cf48bb51a7aac6e4",
+      "POST /api/v2/artifact/log/{artifactId}": "855bc8c1661a74ab",
+      "GET /api/v2/alerts": "5a3fab066acbccdb",
+      "POST /api/v2/alerts": "d47bad6e9a47b012",
+      "POST /api/v2/activity": "5932d0868b9b9df8",
+      "GET /api/v2/activity/{activityLabel}": "5b48500cba47eba0",
+      "POST /api/v2/activity/{activityLabel}": "00f59d521212aa44",
+      "GET /api/v2/activity/{activityLabel}/icon": "34fc4a5f2de752e9",
+      "POST /api/v2/activity/{activityLabel}/icon": "e22748dc71460a80",
+      "POST /api/v2/activity/import": "6f860aca06ec74f0",
+      "PATCH /api/v2/activity/{automationLabel}": "9c6fd0afe8694c09",
+      "GET /api/v3/tasks/success-rate": "83be800d85f6470e",
+      "GET /api/v3/tasks/evolution-over-time": "1c483fa67c6ea93f",
+      "GET /api/v3/tasks/count-scheduling": "d0976e5ddc162fb0",
+      "GET /api/v3/tasks/count-scheduled-executions": "9c53163d686a4153",
+      "GET /api/v3/tasks/count-item-success": "f10755c9fbd9e8c6",
+      "GET /api/v3/tasks/count-failed-by-automation": "4b851165b192557e",
+      "GET /api/v3/tasks/count-executions": "23f4185bb6e53be8",
+      "GET /api/v3/tasks/count-consecutive-failures": "bc13834bbc6b8479",
+      "GET /api/v3/tasks/count-completed-by-state": "ed38ffbfc7615a27",
+      "GET /api/v3/tasks/count-by-state": "e0bcf45c451dfec0",
+      "GET /api/v3/tasks/count-by-runner": "bbfa76e94f73ec69",
+      "GET /api/v3/tasks/count-by-repository": "23fc40320f926eb9",
+      "GET /api/v3/tasks/count-by-automation": "a6601a66782096d2",
+      "GET /api/v3/runners/count": "adab01e9919881a7",
+      "GET /api/v3/runners/count-by-state": "9743cb2ecb9645e8",
+      "GET /api/v3/errors/count": "c78de61554b80c45",
+      "GET /api/v3/errors/count-by-automation": "e69efae2fee52532",
+      "GET /api/v3/automations/count": "160adeef43e0f0f4",
+      "GET /api/v3/alerts/count-by-automation": "ba97b0be8c339e47",
+      "GET /api/v2/task/report": "1b807d52d34e6d5d",
+      "GET /api/v2/task/live-operation/scheduling/count": "20dbf0944d4c8524",
+      "GET /api/v2/task/live-operation/count": "0bccdc3d9d05836f",
+      "GET /api/v2/task/historical-overview/count": "25932e543f2ad0f6",
+      "GET /api/v2/task/historical-overview/count-failed-by-automation": "f59fe5596eaed8fd",
+      "GET /api/v2/task/historical-overview/count-by-state": "5235c376d12ec3d9",
+      "GET /api/v2/task/check-task-finished": "c3700eb6946a31cc",
+      "GET /api/v2/task/check-task-finished-success": "cb0f652852bbf35c",
+      "GET /api/v2/task/analytics/state-count": "e83578a7331ba7f7",
+      "GET /api/v2/task/analytics/error-count": "3f133a3721003cb7",
+      "GET /api/v2/scheduling/occurrences": "b590d5070f654037",
+      "GET /api/v2/scheduling/occurrences/top-runners": "a4209ad229fbab9d",
+      "GET /api/v2/scheduling/occurrences/top-automations": "05b27d5efc294480",
+      "GET /api/v2/scheduling/occurrences/peak-scheduling-days": "76b430250fdad203",
+      "GET /api/v2/scheduling/count": "e3c91940a15727a6",
+      "GET /api/v2/scheduling/analytics/active/count": "e135c308d9a42866",
+      "GET /api/v2/maestro/version": "fc9d868971e1bed7",
+      "GET /api/v2/maestro/location": "adaa3719cd97a082",
+      "GET /api/v2/machine/{machineId}/tasks-summary": "f477edb6f5904bd3",
+      "GET /api/v2/machine/pagination": "12e650ee1cef1935",
+      "GET /api/v2/machine/analytics/tasks-by-runner": "42a6a13b07af95ff",
+      "GET /api/v2/machine/analytics/status-count": "0d29f65147f906d2",
+      "GET /api/v2/machine/": "a2da3191228a20a3",
+      "GET /api/v2/event/{type}": "8f7d88aea3ae7e45",
+      "GET /api/v2/event/list": "84016409c7b146c5",
+      "GET /api/v2/error/{id}": "e856bddfb70ee650",
+      "GET /api/v2/error/{id}/attachments/{attachmentIndex}": "8d0e387f845d6b0b",
+      "GET /api/v2/download/{item}/latest": "d77df2524298d447",
+      "GET /api/v2/credential/{label}/key/{key}": "2cb798a44fffd717",
+      "GET /api/v2/credential/{label}/hs": "c059d28cdc0abc9d",
+      "GET /api/v2/credential/pagination": "760a83aec0afbf83",
+      "GET /api/v2/credential/hs": "3e83a3d77caa4950",
+      "GET /api/v2/bot/{idDeploy}/version/{version}/download": "47ba2ea420d4158e",
+      "GET /api/v2/bot/{botId}": "80a2b5a03dbfee0c",
+      "GET /api/v2/bot/{botId}/version/{botVersion}": "030d1596ee5e26ed",
+      "GET /api/v2/bot/pagination": "e0405394b27a7311",
+      "GET /api/v2/audit/{type}": "5fd3f03784718568",
+      "GET /api/v2/artifact/{artifactId}": "ea591b7674461e2e",
+      "GET /api/v2/artifact/{artifactId}/file": "c32e270bee87bda5",
+      "GET /api/v2/alerts/{id}": "f5c2571e30562264",
+      "GET /api/v2/alerts/occurrences": "fa53d049bc57f316",
+      "GET /api/v2/alerts/count": "9cdf5c0dde093a49",
+      "GET /api/v2/alerts/analytics/count": "82858633e26035ff",
+      "GET /api/v2/agent": "ffeba94653ebdeef",
+      "GET /api/v2/agent/{botId}": "06a21b0fcb73cac6",
+      "GET /api/v2/activity/{label}/export": "33334d71d94b85c9",
+      "GET /api/v2/activity/pagination": "5743c7d987536fa2",
+      "GET /api/v2/activity/count": "0a2ccccfc27c0aea",
+      "DELETE /api/v2/task/bulk": "f9ffff482378a76b"
+    },
+    "esquemas": {
+      "ErrorDTO": "d2e9aba450c7d090",
+      "UpdatedCountDTO": "a48a07e501c417df",
+      "PrivateAuditRequestDTO": "44f925e8ea4b222b",
+      "ArtifactDTO": "8d7907f087332e54",
+      "AutomationTask": "bb8bcc862e1ba61c",
+      "RunnerDTO": "1ff81dfb0f404be3",
+      "NewSchedulingDTO": "f1c755e978a4988e",
+      "SchedulingDTO": "dc16395f39c4d496",
+      "MessageDTO": "ef43e0526d725dc6",
+      "MachineDTO": "bd3e8b8a67e05ff7",
+      "Metrics": "9b3822b5b0ec78b2",
+      "EventStudioDTO": "03150aed6f4b92f7",
+      "EventRequestDTO": "063d6e8f29b329b7",
+      "CredentialDTO": "24c1bf200d97091e",
+      "SecretDTO": "dc908eae1b8b89d0",
+      "DeployDTO": "7843f9df5d695605",
+      "ObjectId": "999536ac85a32555",
+      "AuditRequestDTO": "063d6e8f29b329b7",
+      "AlertDTO": "174228a6202c009b",
+      "AutomationActivityParameter": "a74de1abaabb1bd1",
+      "AutomationCreateDTO": "b2dcd6b5baebe5af",
+      "AlertNotification": "1f800c51a11a0928",
+      "AutomationActivity": "5d750847514d005b",
+      "ReturnAutomationActivityDTO": "8519b031a7d5c88f",
+      "DateRangeFilterV2DTO": "c0f3a77cc5a40c53",
+      "OperationCenterFilterV2DTO": "53cdd497954a2d68",
+      "TaskSuccessRateDTO": "14d4b9fddf598137",
+      "TaskSuccessRateItemDTO": "b9b7e52bb5039e13",
+      "TaskEvolutionFilterDTO": "73bac73aa09421a7",
+      "TaskEvolutionPointDTO": "2f5e2fe48366e9be",
+      "TaskEvolutionResponseDTO": "13d5fd40bd54b670",
+      "CountDTO": "c2fc4f794ac0a651",
+      "CountFailedByAutomationFilter": "a8c32a8a7ecf658f",
+      "CountFailedByAutomationDTO": "685cce3d041e0e0e",
+      "Item": "b7d1c1355380f6b7",
+      "CountConsecutiveFailureDTO": "4401d9acc78a62dc",
+      "CountConsecutiveFailureDetailDTO": "b7d1c1355380f6b7",
+      "CountTasksByStateDTO": "825ae5a3d1574d00",
+      "CountTasksByStateDetailDTO": "dc486f4bd7a5396d",
+      "CountByRunnerDTO": "685cce3d041e0e0e",
+      "CountByRepositoryFilterDTO": "1078ce80e2aa9632",
+      "CountByRepositoryDTO": "f1611c7fdc45c264",
+      "ItemDTO": "2bec3bcda0018bb3",
+      "AutomationItem": "b7d1c1355380f6b7",
+      "CountTaskByAutomationDTO": "d983cc13cb8e28bf",
+      "CountByStateFilterDTO": "b16983d43a22c140",
+      "CountByStateDTO": "24fa762ef8de81d3",
+      "RunnerItemDTO": "fe6343168534d467",
+      "CountErrorByAutomationDTO": "685cce3d041e0e0e",
+      "AutomationFilterDTO": "bd187d3546808cc4",
+      "CountByAutomationDTO": "d988fe696fd7944e",
+      "AutomationTaskFilterDTO": "4110e3890366dbba",
+      "Pageable": "772ed19c0b35b56c",
+      "PageAutomationTask": "279f6e10072b6855",
+      "PageableObject": "37fe44e5e3fe45a8",
+      "SortObject": "93ce44643a6bb0b8",
+      "AutomationTaskReportFilterDTO": "75f0c327f592686e",
+      "AutomationTaskResumedDTO": "6594a07ab40baed4",
+      "PageAutomationTaskResumedDTO": "0e8a8a1e9cdbbce1",
+      "DateRangeFilterDTO": "c0f3a77cc5a40c53",
+      "OperationCenterFilterDTO": "a884c332538a9784",
+      "CountTasksFailedByAutomationDTO": "93d98e7bcd766fa5",
+      "CountTasksFailedByAutomationDetailDTO": "a5e61133080419d1",
+      "ScheduleFilterDTO": "a89133c54b319a3d",
+      "PageSchedulingDTO": "5b69a7cb3352bcbd",
+      "ScheduleDateRangeFilterDTO": "2875a6cd1ce4b12d",
+      "SchedulingOccurrenceDTO": "0f8bea4feaaf50d3",
+      "SchedulingOccurrenceGroupedByDayDTO": "f32ebd993d715d05",
+      "SchedulingOccurrenceTaskDTO": "a986134ef1111bb1",
+      "OccurrenceTopRunnersProjection": "120328feeee2576b",
+      "OccurrenceTopAutomationDTO": "bc4a414614644abe",
+      "OccurrenceTopAutomationDetailDTO": "a5e61133080419d1",
+      "OccurrencePeakSchedulingDayDTO": "86cc04211e2aaa44",
+      "SchedulingCountDTO": "e59e34aefc995782",
+      "TaskSummaryDTO": "3f5a581cf61fc5f0",
+      "StreamingResponseBody": "44136fa355b3678a",
+      "MachineFilterDTO": "a0bc46844409ef91",
+      "PageMachineDTO": "fcc0f5dcae22544f",
+      "RunnerSummaryDTO": "924777fd8f7ff655",
+      "TasksByRunnerDTO": "a9673189c2f43eb2",
+      "EventDTO": "43378019c218f4ed",
+      "FilterEventDTO": "d9b23d8a1634e022",
+      "EventResponseDTO": "7b9c1062931d0fbf",
+      "EventUser": "0579053da7acc3c2",
+      "PageEventResponseDTO": "f720e11500dbb629",
+      "FilterErrorDTO": "967a102395df54f3",
+      "ErrorListDTO": "3e5f23d8587aa671",
+      "PageErrorListDTO": "89f4c9ecd2adf672",
+      "Error": "5ba1c107dccbddf6",
+      "DownloadDTO": "8067e81adf43bcca",
+      "FilterCredentialDTO": "ce8b1fa3a8cc5b09",
+      "PageCredentialDTO": "b522c0703e1ba500",
+      "BotFilterDTO": "f5ecfd608829c473",
+      "PageDeployDTO": "191cd22e11a0827a",
+      "AuditFilter": "03161b39cdb049a4",
+      "AuditResponseDTO": "0434750625b0cc4c",
+      "AuditUser": "1c6807b1c10bf1dc",
+      "PageAuditResponseDTO": "7d96eebdd0d74ee3",
+      "AuditDTO": "2d7846aadd7ebe1d",
+      "ArtifactFilterDTO": "f1a02d7d8d0c8c3d",
+      "PageArtifactDTO": "8761fda326b8acd2",
+      "AlertFilterDTO": "7e0d265110252129",
+      "PageAlertDTO": "8438a50a5ec70a7c",
+      "AlertCountDTO": "69a0a401ee8839f7",
+      "AgentDTO": "aaa5aa4d54a83262",
+      "PageReturnAutomationActivityDTO": "5cc02935a52d65b0",
+      "ActivitiesCountDTO": "6f87d88ad202d0fc",
+      "BulkActionTasksDTO": "6609fd1bd12cb602"
+    }
+  },
+  "atualizado_em": "2026-10-21T04:07:52Z",
+  "verificado_em": "2026-10-21T04:19:44Z"
+}

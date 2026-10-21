@@ -1,0 +1,1981 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Endpoints do Maestro fora do OpenAPI publico",
+    "description": "Endpoints que funcionam mas nao constam no OpenAPI publico (login, logs, datapool, apagar versao), mapeados do Maestro SDK e de uso real, e notas curadas de cada operacao (descricao, observacoes, corpo de exemplo). Mantido a mao neste repositorio; a spec oficial prevalece quando uma operacao passa a existir nela."
+  },
+  "paths": {
+    "/api/v2/workspace/login": {
+      "post": {
+        "tags": [
+          "00 - Setup & Auth"
+        ],
+        "summary": "Login - Workspace",
+        "description": "Autentica no workspace e devolve o `accessToken` usado por todas as outras requests.\n\n### Onde pegar as credenciais\nOrchestrator -> **Settings -> Dev. Environment**. O `login` e o label do workspace (ex.: `meu-workspace` em PROD, `meu-workspace-homolog` em QA) e o `key` e a access key.\n\n### Resposta\n```json\n{ \"accessToken\": \"eyJhbGciOi...\", \"organizationLabel\": \"meu-workspace\" }\n```\n\nNao ha refresh nem logout no servidor: ao receber `401`, rode esta request de novo.",
+        "x-fora-da-spec": true,
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "login": "{{login}}",
+                "key": "{{key}}"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/activity": {
+      "get": {
+        "tags": [
+          "Automations"
+        ],
+        "summary": "Automation - List",
+        "description": "**`[legado]`** Listagem simples, sem paginacao. Nao consta no OpenAPI atual, mas continua respondendo por compatibilidade.\n\nPara codigo novo prefira `Automation - List (Paginated)`.",
+        "x-fora-da-spec": true,
+        "parameters": []
+      }
+    },
+    "/api/v2/log": {
+      "post": {
+        "tags": [
+          "Logs"
+        ],
+        "summary": "Log - Create",
+        "description": "Cria a estrutura (as colunas) de um log. Rode **uma vez** por log.\n\n| Campo da coluna | Para que serve |\n|---|---|\n| `name` | Titulo exibido no portal |\n| `label` | Chave usada ao inserir entradas |\n| `width` | Largura sugerida da coluna, em pixels |\n\nO `activityLabel` informado aqui vira o identificador do log - e o valor de `{{logLabel}}` nas demais requests desta pasta.",
+        "x-fora-da-spec": true,
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "organizationLabel": "{{organization}}",
+                "activityLabel": "log-demo",
+                "columns": [
+                  {
+                    "name": "Data/Hora",
+                    "label": "col1",
+                    "width": 200
+                  },
+                  {
+                    "name": "Registro",
+                    "label": "col2",
+                    "width": 300
+                  },
+                  {
+                    "name": "Status",
+                    "label": "col3",
+                    "width": 100
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Logs"
+        ],
+        "summary": "Log - List",
+        "description": "Lista os logs da organizacao.\n\n> Este endpoint nao aparece no OpenAPI **nem** no SDK Python - foi observado apenas em uso. Se retornar `404` no seu servidor, use `Log - Fetch Header` com o label que voce ja conhece.",
+        "x-fora-da-spec": true,
+        "parameters": []
+      }
+    },
+    "/api/v2/log/{logLabel}/entry": {
+      "post": {
+        "tags": [
+          "Logs"
+        ],
+        "summary": "Log - Create Entry",
+        "description": "Insere uma linha no log.\n\nO corpo e um dicionario **plano**, sem wrapper: as chaves sao os `label` das colunas definidas na criacao. Envie todos os valores como string.\n\nChaves que nao correspondem a nenhuma coluna sao ignoradas silenciosamente - se um valor nao aparecer no portal, confira se o `label` bate.",
+        "x-fora-da-spec": true,
+        "parameters": [
+          {
+            "name": "logLabel",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "col1": "2026-01-15 10:30:00",
+                "col2": "Registro 'XYZ' processado",
+                "col3": "SUCCESS"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/log/{logLabel}": {
+      "get": {
+        "tags": [
+          "Logs"
+        ],
+        "summary": "Log - Fetch Header",
+        "description": "Retorna a definicao do log (a lista de `columns`, cada uma com `label` e `name`).\n\nO SDK chama este endpoint antes de listar entradas justamente para traduzir os `label` de volta para nomes legiveis.",
+        "x-fora-da-spec": true,
+        "parameters": [
+          {
+            "name": "logLabel",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Logs"
+        ],
+        "summary": "Log - Delete",
+        "description": "Exclui o log e **todas** as suas entradas. Operacao destrutiva e sem desfazer.",
+        "x-fora-da-spec": true,
+        "parameters": [
+          {
+            "name": "logLabel",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/api/v2/log/{logLabel}/entry-list": {
+      "get": {
+        "tags": [
+          "Logs"
+        ],
+        "summary": "Log - Fetch Entries",
+        "description": "Lista as entradas do log dentro da janela de `days`.\n\nCada item vem com um objeto `columns` chaveado pelos **labels** das colunas. Combine com `Log - Fetch Header` para exibir os nomes.",
+        "x-fora-da-spec": true,
+        "parameters": [
+          {
+            "name": "logLabel",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "days",
+            "in": "query",
+            "required": false,
+            "description": "Janela retroativa em dias",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/api/v2/log/{logLabel}/export": {
+      "get": {
+        "tags": [
+          "Logs"
+        ],
+        "summary": "Log - Export",
+        "description": "Exporta as entradas do log como arquivo.",
+        "x-fora-da-spec": true,
+        "parameters": [
+          {
+            "name": "logLabel",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "days",
+            "in": "query",
+            "required": false,
+            "description": "Janela retroativa em dias",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "format",
+            "in": "query",
+            "required": false,
+            "description": "Formato do arquivo: `csv`",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/api/v2/datapool": {
+      "get": {
+        "tags": [
+          "Datapool"
+        ],
+        "summary": "Datapool - List",
+        "description": "Lista as filas da organizacao.",
+        "x-fora-da-spec": true,
+        "parameters": []
+      },
+      "post": {
+        "tags": [
+          "Datapool"
+        ],
+        "summary": "Datapool - Create",
+        "description": "Cria uma fila.\n\n| Campo | Observacao |\n|---|---|\n| `consumptionPolicy` | `FIFO` (padrao) ou `LIFO` |\n| `trigger` | `NEVER` (padrao), `ALWAYS` ou `NO_TASK_ACTIVE`. Define se a insercao de item dispara a automacao |\n| `schema[].type` | `TEXT`, `INTEGER` ou `DOUBLE` |\n| `schema[].uniqueId` | Marca o campo que identifica o item (evita duplicidade) |\n| `schema[].displayValue` | Campo exibido na listagem do portal |\n| `autoRetry` / `maxAutoRetry` | Reprocessamento automatico de itens com erro |\n| `itemMaxProcessingTime` | Minutos ate o item cair em `TIMEOUT` |\n| `abortOnError` / `maxErrorsBeforeInactive` | Desativa a fila apos N erros |\n\n> O corpo envia `defaultAutomation`, mas a resposta devolve o mesmo dado como `defaultActivity`. A assimetria e da API.",
+        "x-fora-da-spec": true,
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "label": "demo-datapool",
+                "name": "Demo Datapool",
+                "defaultAutomation": "{{automationLabel}}",
+                "consumptionPolicy": "FIFO",
+                "schema": [
+                  {
+                    "label": "product_name",
+                    "type": "TEXT",
+                    "uniqueId": true,
+                    "displayValue": true
+                  },
+                  {
+                    "label": "product_category",
+                    "type": "TEXT",
+                    "uniqueId": false,
+                    "displayValue": false
+                  },
+                  {
+                    "label": "product_value",
+                    "type": "DOUBLE",
+                    "uniqueId": false,
+                    "displayValue": false
+                  }
+                ],
+                "trigger": "NEVER",
+                "autoRetry": true,
+                "maxAutoRetry": 3,
+                "abortOnError": true,
+                "maxErrorsBeforeInactive": 0,
+                "enableProcessingTime": true,
+                "itemMaxProcessingTime": 10,
+                "active": true,
+                "repositoryLabel": "DEFAULT"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/datapool/{datapoolLabel}": {
+      "get": {
+        "tags": [
+          "Datapool"
+        ],
+        "summary": "Datapool - Get",
+        "description": "Retorna a configuracao completa da fila, incluindo o campo `active`.\n\nRode esta request antes de ativar/desativar: o corpo daqueles endpoints e este mesmo objeto com o `active` alterado.",
+        "x-fora-da-spec": true,
+        "parameters": [
+          {
+            "name": "datapoolLabel",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Datapool"
+        ],
+        "summary": "Datapool - Activate",
+        "description": "Ativa a fila.\n\n**Nao existe endpoint dedicado.** Voce faz um `POST` no proprio datapool reenviando o objeto **inteiro** com `active: true`. Campos omitidos sao sobrescritos - rode `Datapool - Get` primeiro e edite a resposta.",
+        "x-fora-da-spec": true,
+        "parameters": [
+          {
+            "name": "datapoolLabel",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "label": "{{datapoolLabel}}",
+                "name": "Demo Datapool",
+                "defaultAutomation": "{{automationLabel}}",
+                "consumptionPolicy": "FIFO",
+                "schema": [
+                  {
+                    "label": "product_name",
+                    "type": "TEXT",
+                    "uniqueId": true,
+                    "displayValue": true
+                  }
+                ],
+                "trigger": "NEVER",
+                "autoRetry": true,
+                "maxAutoRetry": 3,
+                "abortOnError": true,
+                "maxErrorsBeforeInactive": 0,
+                "enableProcessingTime": true,
+                "itemMaxProcessingTime": 10,
+                "active": true,
+                "repositoryLabel": "DEFAULT"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Datapool"
+        ],
+        "summary": "Datapool - Delete",
+        "description": "Exclui a fila inteira, com todos os seus itens. Operacao destrutiva e sem desfazer.",
+        "x-fora-da-spec": true,
+        "parameters": [
+          {
+            "name": "datapoolLabel",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/api/v2/datapool/{datapoolLabel}/summary": {
+      "get": {
+        "tags": [
+          "Datapool"
+        ],
+        "summary": "Datapool - Summary",
+        "description": "Contadores da fila por estado.\n\nA chave `countPending` e a que interessa na pratica: `countPending == 0` significa fila vazia (e o que o `is_empty()` do SDK verifica).",
+        "x-fora-da-spec": true,
+        "parameters": [
+          {
+            "name": "datapoolLabel",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/api/v2/datapool/{datapoolLabel}/view": {
+      "get": {
+        "tags": [
+          "Datapool"
+        ],
+        "summary": "Datapool - View",
+        "description": "Retorna os itens da fila como exibidos no portal, com `id` e `state` de cada um.\n\nE o endpoint usado pelo utilitario interno `Finalizar datapool itens` para achar os itens `PENDING` e apaga-los em lote.",
+        "x-fora-da-spec": true,
+        "parameters": [
+          {
+            "name": "datapoolLabel",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/api/v2/datapool/{datapoolLabel}/push": {
+      "post": {
+        "tags": [
+          "Datapool"
+        ],
+        "summary": "Datapool - Add Item",
+        "description": "Insere um item na fila.\n\nAs chaves de `values` sao os `label` definidos no `schema` da fila. `priority` maior e consumido antes, dentro da politica configurada.\n\nSe o `trigger` da fila for `ALWAYS` ou `NO_TASK_ACTIVE`, esta chamada pode disparar a automacao automaticamente.",
+        "x-fora-da-spec": true,
+        "parameters": [
+          {
+            "name": "datapoolLabel",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "priority": 0,
+                "values": {
+                  "product_name": "Smartphone",
+                  "product_category": "Electronic",
+                  "product_value": "2000"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/datapool/{datapoolLabel}/pull": {
+      "get": {
+        "tags": [
+          "Datapool"
+        ],
+        "summary": "Datapool - Pull Next Item",
+        "description": "Consome o proximo item pendente, movendo-o para `PROCESSING`.\n\n### Atencao ao status 204\n**`204 No Content` (sem corpo) significa que a fila esta vazia**, nao que houve erro. E assim que o bot sabe que terminou o trabalho.\n\nA ordem de entrega segue a `consumptionPolicy` (`FIFO`/`LIFO`) e a `priority` dos itens.",
+        "x-fora-da-spec": true,
+        "parameters": [
+          {
+            "name": "datapoolLabel",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/api/v2/datapool/{datapoolLabel}/entry/{entryId}": {
+      "get": {
+        "tags": [
+          "Datapool"
+        ],
+        "summary": "Datapool - Get Entry",
+        "description": "Retorna um item especifico da fila com todos os campos (estado, valores, tentativas, runner, datas).\n\nUse antes de atualizar: o `POST` de atualizacao espera o objeto completo.",
+        "x-fora-da-spec": true,
+        "parameters": [
+          {
+            "name": "datapoolLabel",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "entryId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Datapool"
+        ],
+        "summary": "Datapool - Update Entry (Report Done/Error)",
+        "description": "Atualiza o item. E por aqui que o bot reporta o resultado do processamento.\n\n- **Concluir:** `state: \"DONE\"` + `message` descritiva\n- **Falhar:** `state: \"ERROR\"` + `errorType: \"SYSTEM\"` (falha tecnica) ou `\"BUSINESS\"` (regra de negocio)\n\nRepare na grafia **`dataPoolLabel`** (com `P` maiusculo) no corpo, diferente do `datapool` do path.\n\nOs campos `dateRegister`, `dateProcessing` e `dateFinished` sao somente leitura - nao os reenvie.",
+        "x-fora-da-spec": true,
+        "parameters": [
+          {
+            "name": "datapoolLabel",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "entryId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "dataPoolLabel": "{{datapoolLabel}}",
+                "state": "DONE",
+                "priority": 0,
+                "values": {
+                  "product_name": "Smartphone"
+                },
+                "uniqueKey": "Smartphone",
+                "displayValue": "Smartphone",
+                "message": "Processado com sucesso",
+                "errorType": null,
+                "retryIndex": 0,
+                "runner": "{{runnerId}}",
+                "taskId": "{{taskId}}",
+                "parent": null,
+                "child": null
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Datapool"
+        ],
+        "summary": "Datapool - Delete Entry",
+        "description": "Exclui um item da fila.\n\nPermitido nos estados `PENDING`, `CANCELED`, `DONE` e `ERROR`. Itens em `PROCESSING` ou `TIMEOUT` precisam ser resolvidos antes.\n\nE o endpoint que o utilitario `Finalizar datapool itens` usa para limpar a fila em lote.",
+        "x-fora-da-spec": true,
+        "parameters": [
+          {
+            "name": "datapoolLabel",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "entryId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/api/v2/datapool/{datapoolLabel}/entry/{entryId}/cancel": {
+      "put": {
+        "tags": [
+          "Datapool"
+        ],
+        "summary": "Datapool - Cancel Entry",
+        "description": "Cancela um item.\n\n**So funciona em itens no estado `PENDING`.** Item ja em `PROCESSING` nao pode ser cancelado por aqui.\n\nCuriosidade: e o unico `PUT` de toda a API v2.",
+        "x-fora-da-spec": true,
+        "parameters": [
+          {
+            "name": "datapoolLabel",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "entryId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "state": "CANCELED",
+                "message": "Cancelado manualmente."
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/bot/{botId}/version/{botVersion}": {
+      "delete": {
+        "tags": [
+          "Bots"
+        ],
+        "summary": "Bot - Delete Version",
+        "description": "**`[legado]`** Exclui uma versao do deploy.\n\n> Este endpoint **nao consta no OpenAPI atual**. Estava na versao anterior desta collection e foi mantido, mas pode ter sido removido do servidor - valide antes de depender dele em automacao de esteira.",
+        "x-fora-da-spec": true,
+        "parameters": [
+          {
+            "name": "botId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "botVersion",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "x-notas": {
+    "POST /api/v2/workspace/login": [
+      {
+        "nome": "Login - Workspace",
+        "descricao": "Autentica no workspace e devolve o `accessToken` usado por todas as outras requests.\n\n### Onde pegar as credenciais\nOrchestrator -> **Settings -> Dev. Environment**. O `login` e o label do workspace (ex.: `meu-workspace` em PROD, `meu-workspace-homolog` em QA) e o `key` e a access key.\n\n### Resposta\n```json\n{ \"accessToken\": \"eyJhbGciOi...\", \"organizationLabel\": \"meu-workspace\" }\n```\n\nNao ha refresh nem logout no servidor: ao receber `401`, rode esta request de novo.",
+        "exemplo": {
+          "login": "{{login}}",
+          "key": "{{key}}"
+        }
+      }
+    ],
+    "GET /api/v2/maestro/version": [
+      {
+        "nome": "Maestro - Version",
+        "descricao": "Retorna a versao do Maestro. **Unico endpoint que nao exige autenticacao** - use como health check e para saber se o servidor suporta um recurso.\n\n```json\n{ \"version\": \"3.2.1\" }\n```\n\nVersoes minimas conhecidas: `2.0.0` para interromper tarefa, erros e credenciais; `3.0.0` para editar/remover credencial; `3.0.2` para datapool."
+      }
+    ],
+    "GET /api/v2/maestro/location": [
+      {
+        "nome": "Maestro - User Location",
+        "descricao": "Retorna a localizacao/regiao associada ao usuario autenticado. Usado internamente pelo portal."
+      }
+    ],
+    "GET /api/v2/task": [
+      {
+        "nome": "Task - List",
+        "descricao": "Lista tarefas com paginacao e filtros.\n\n### Uso tipico\nPara achar tarefas travadas: ative `states=RUNNING` e use `days` maior.\n\n### Resposta\nEnvelope paginado: `{ \"content\": [...], \"totalPages\": N, \"totalElements\": N }`.\n\n> O parametro correto para filtrar estado e **`states`** (lista) ou `stateFilter`. Versoes antigas desta collection usavam `state`, que nao existe no contrato da API.",
+        "query_sugerida": {
+          "days": "7",
+          "size": "50",
+          "page": "0",
+          "sort": "dateCreation,desc",
+          "states": "RUNNING"
+        }
+      }
+    ],
+    "POST /api/v2/task": [
+      {
+        "nome": "Task - Create",
+        "descricao": "Enfileira uma nova execucao da automacao indicada em `activityLabel`.\n\n| Campo | Observacao |\n|---|---|\n| `activityLabel` | Obrigatorio. Label da automacao cadastrada |\n| `parameters` | Dicionario livre; a chave e o *label* do parametro |\n| `test` | `true` executa em modo teste (nao conta no Insights) |\n| `priority` | 0 a 10 |\n| `minExecutionDate` | ISO 8601. **O Orchestrator opera em UTC-0** |\n\nRetorna o objeto da tarefa criada, incluindo o `id`.",
+        "exemplo": {
+          "activityLabel": "{{automationLabel}}",
+          "test": false,
+          "priority": 0,
+          "parameters": {
+            "exemplo_texto": "valor",
+            "exemplo_numero": 10
+          },
+          "minExecutionDate": "2026-01-15T10:00:00Z"
+        },
+        "observacoes": [
+          "\"parameters\" e um dicionario livre: a chave e o label do parametro",
+          "cadastrado na automacao. Remova \"minExecutionDate\" para executar imediatamente."
+        ]
+      }
+    ],
+    "GET /api/v2/task/{taskId}": [
+      {
+        "nome": "Task - Get",
+        "descricao": "Detalhes de uma tarefa: estado, parametros, runner, datas, contadores do Insights e a flag `interrupted`.\n\nUm bot que suporta interrupcao deve consultar este endpoint periodicamente e encerrar-se quando `interrupted` virar `true`."
+      }
+    ],
+    "POST /api/v2/task/{taskId}": [
+      {
+        "nome": "Task - Finish",
+        "descricao": "Encerra a tarefa.\n\n`finishStatus`: `SUCCESS` | `FAILED` | `PARTIALLY_COMPLETED`.\n\n### Contadores do Insights\n`totalItems`, `processedItems` e `failedItems` alimentam o BotCity Insights. **`totalItems` deve ser igual a `processedItems + failedItems`.** Os SDKs validam isso no cliente e derivam o terceiro valor quando voce informa dois; o servidor nao valida, entao um valor inconsistente passa e suja o relatorio. Se nao quiser reportar itens, remova os tres campos.\n\nUsado pelo utilitario interno `Encerrar tarefas botcity`, que encerra tarefas travadas com `PARTIALLY_COMPLETED`.",
+        "exemplo": {
+          "state": "FINISHED",
+          "finishStatus": "SUCCESS",
+          "finishMessage": "Tarefa finalizada por usuario.",
+          "totalItems": 100,
+          "processedItems": 95,
+          "failedItems": 5
+        },
+        "observacoes": [
+          "\"state\" e sempre FINISHED. Os contadores alimentam o BotCity Insights:",
+          "totalItems DEVE ser igual a processedItems + failedItems."
+        ]
+      },
+      {
+        "nome": "Task - Restart",
+        "descricao": "Recoloca a tarefa na fila (`state = START`). Mesmo endpoint do *Finish*, corpo diferente.",
+        "exemplo": {
+          "state": "START"
+        }
+      },
+      {
+        "nome": "Task - Interrupt",
+        "descricao": "Solicita a interrupcao da tarefa. **Requer Maestro >= 2.0.0.**\n\nA interrupcao e *cooperativa*: o Maestro apenas marca a flag `interrupted`. O bot precisa consultar `Task - Get` e encerrar-se por conta propria. Se o bot nao implementar isso, nada acontece - nesse caso use `Task - Finish`.",
+        "exemplo": {
+          "interrupted": true
+        },
+        "observacoes": [
+          "Interrupcao e cooperativa: o Maestro apenas marca a flag.",
+          "O bot precisa consultar o campo \"interrupted\" da tarefa e se encerrar sozinho."
+        ]
+      }
+    ],
+    "POST /api/v2/task/{taskId}/duplicate": [
+      {
+        "nome": "Task - Duplicate",
+        "descricao": "Cria uma nova tarefa com os mesmos parametros da tarefa informada. Atalho para reprocessar sem remontar o payload."
+      }
+    ],
+    "DELETE /api/v2/task/{taskId}": [
+      {
+        "nome": "Task - Delete",
+        "descricao": "Exclui a tarefa e seu historico. Operacao destrutiva e sem desfazer."
+      }
+    ],
+    "DELETE /api/v2/task/bulk": [
+      {
+        "nome": "Task - Bulk Delete",
+        "descricao": "Exclui varias tarefas de uma vez. O campo chama-se `labels` mas recebe a lista de **IDs numericos**.\n\nOperacao destrutiva e sem desfazer.",
+        "exemplo": {
+          "labels": [
+            123456,
+            123457,
+            123458
+          ]
+        },
+        "observacoes": [
+          "\"labels\" recebe a lista de IDs numericos das tarefas a excluir."
+        ]
+      }
+    ],
+    "GET /api/v2/task/report": [
+      {
+        "nome": "Task - Report",
+        "descricao": "Versao resumida da listagem, pensada para exportacao de relatorio. Retorna menos campos por tarefa que o `Task - List`.",
+        "query_sugerida": {
+          "days": "30"
+        }
+      }
+    ],
+    "GET /api/v2/task/check-task-finished": [
+      {
+        "nome": "Task - Check Finished",
+        "descricao": "Booleano: indica se a organizacao ja teve alguma tarefa finalizada. Usado pelo portal no fluxo de onboarding."
+      }
+    ],
+    "GET /api/v2/task/check-task-finished-success": [
+      {
+        "nome": "Task - Check Finished With Success",
+        "descricao": "Booleano: indica se a organizacao ja teve alguma tarefa finalizada com sucesso. Usado pelo portal no fluxo de onboarding."
+      }
+    ],
+    "GET /api/v2/task/analytics/error-count": [
+      {
+        "nome": "Analytics - Error Count",
+        "descricao": "Quantidade de tarefas que terminaram com erro no periodo.",
+        "query_sugerida": {
+          "startDate": "2026-01-01",
+          "endDate": "2026-12-31"
+        }
+      }
+    ],
+    "GET /api/v2/task/analytics/state-count": [
+      {
+        "nome": "Analytics - State Count",
+        "descricao": "Contagem de tarefas agrupada por estado no periodo.",
+        "query_sugerida": {
+          "startDate": "2026-01-01",
+          "endDate": "2026-12-31"
+        }
+      }
+    ],
+    "GET /api/v2/task/historical-overview/count": [
+      {
+        "nome": "Overview - Count",
+        "descricao": "Total de tarefas executadas no periodo.",
+        "query_sugerida": {
+          "startDate": "2026-01-01",
+          "endDate": "2026-12-31"
+        }
+      }
+    ],
+    "GET /api/v2/task/historical-overview/count-by-state": [
+      {
+        "nome": "Overview - Count By State",
+        "descricao": "Serie historica de tarefas por estado no periodo.",
+        "query_sugerida": {
+          "startDate": "2026-01-01",
+          "endDate": "2026-12-31"
+        }
+      }
+    ],
+    "GET /api/v2/task/historical-overview/count-failed-by-automation": [
+      {
+        "nome": "Overview - Failed By Automation",
+        "descricao": "Ranking de falhas agrupadas por automacao. Bom ponto de partida para priorizar sustentacao.",
+        "query_sugerida": {
+          "startDate": "2026-01-01",
+          "endDate": "2026-12-31"
+        }
+      }
+    ],
+    "GET /api/v2/task/live-operation/count": [
+      {
+        "nome": "Live Operation - Automations Count",
+        "descricao": "Quantidade de automacoes em operacao neste momento."
+      }
+    ],
+    "GET /api/v2/task/live-operation/scheduling/count": [
+      {
+        "nome": "Live Operation - Schedulings Count",
+        "descricao": "Quantidade de agendamentos em operacao neste momento."
+      }
+    ],
+    "GET /api/v2/activity": [
+      {
+        "nome": "Automation - List",
+        "descricao": "**`[legado]`** Listagem simples, sem paginacao. Nao consta no OpenAPI atual, mas continua respondendo por compatibilidade.\n\nPara codigo novo prefira `Automation - List (Paginated)`."
+      }
+    ],
+    "GET /api/v2/activity/pagination": [
+      {
+        "nome": "Automation - List (Paginated)",
+        "descricao": "Listagem paginada de automacoes, com filtros por repositorio, tecnologia e busca textual. E a versao suportada oficialmente.",
+        "query_sugerida": {
+          "size": "50",
+          "page": "0",
+          "sort": "label,asc"
+        }
+      }
+    ],
+    "GET /api/v2/activity/{activityLabel}": [
+      {
+        "nome": "Automation - Get",
+        "descricao": "Detalhes da automacao: parametros cadastrados, runners habilitados, timeout, prioridade e os campos de Insights."
+      }
+    ],
+    "GET /api/v2/activity/count": [
+      {
+        "nome": "Automation - Count",
+        "descricao": "Contadores de automacoes: total, `COMPLETE` e `DRAFT`."
+      }
+    ],
+    "POST /api/v2/activity": [
+      {
+        "nome": "Automation - Create",
+        "descricao": "Cria uma automacao.\n\n`technology`: `JAVA` | `PYTHON` | `JAVASCRIPT` | `COMMAND`\n\n`parameters[].type`: `TEXT` | `INTEGER` | `DOUBLE` | `DATE` | `SINGLE_OPTION` | `MULTI_OPTION` | `FILE` | `CREDENTIAL_SINGLE` | `CREDENTIAL_MULTIPLE`\n\nO `label` e imutavel depois de criado e e o que vai em `activityLabel` nas tarefas.",
+        "exemplo": {
+          "label": "minha-automacao",
+          "name": "Minha Automacao",
+          "description": "Automacao criada via API",
+          "technology": "PYTHON",
+          "repositoryLabel": "DEFAULT",
+          "machines": [
+            "{{runnerId}}"
+          ],
+          "timeout": 3600,
+          "priority": 0,
+          "parameters": [
+            {
+              "label": "cliente",
+              "name": "Cliente",
+              "type": "TEXT",
+              "required": true,
+              "defaultValue": ""
+            }
+          ],
+          "users": [],
+          "notificationTypes": [
+            "ERROR"
+          ]
+        },
+        "observacoes": [
+          "\"technology\": JAVA | PYTHON | JAVASCRIPT | COMMAND",
+          "\"parameters[].type\": TEXT | INTEGER | DOUBLE | DATE | SINGLE_OPTION | MULTI_OPTION | FILE | CREDENTIAL_SINGLE | CREDENTIAL_MULTIPLE"
+        ]
+      }
+    ],
+    "PATCH /api/v2/activity/{automationLabel}": [
+      {
+        "nome": "Automation - Update (PATCH)",
+        "descricao": "Atualiza a automacao. **Esta e a forma recomendada** (o `POST` equivalente esta deprecated).\n\nOs campos `insightsHumanTimePerItem`, `insightsHumanCostPerItem` e `insightsInvestment` sao os que alimentam o calculo de ROI do BotCity Insights.",
+        "exemplo": {
+          "name": "Minha Automacao",
+          "description": "Descricao atualizada",
+          "timeout": 3600,
+          "priority": 0,
+          "insightsHumanTimePerItem": 5,
+          "insightsHumanCostPerItem": 2.5,
+          "insightsInvestment": 10000
+        },
+        "observacoes": [
+          "Envie apenas os campos que quer alterar.",
+          "Os campos insights* alimentam o calculo de ROI do BotCity Insights."
+        ]
+      }
+    ],
+    "POST /api/v2/activity/{activityLabel}": [
+      {
+        "nome": "Automation - Update (DEPRECATED)",
+        "descricao": "**Deprecated na propria spec.** Mantido apenas para integracoes antigas. Use `Automation - Update (PATCH)`.",
+        "exemplo": {
+          "name": "Minha Automacao",
+          "description": "Descricao atualizada",
+          "timeout": 3600,
+          "priority": 0,
+          "insightsHumanTimePerItem": 5,
+          "insightsHumanCostPerItem": 2.5,
+          "insightsInvestment": 10000
+        },
+        "observacoes": [
+          "Envie apenas os campos que quer alterar.",
+          "Os campos insights* alimentam o calculo de ROI do BotCity Insights."
+        ]
+      }
+    ],
+    "PUT /api/v2/activity/{automationLabel}/priority/{priority}": [
+      {
+        "nome": "Automation - Change Priority",
+        "descricao": "Altera a prioridade da automacao. O valor vai **no path**, nao no corpo."
+      }
+    ],
+    "GET /api/v2/activity/{activityLabel}/icon": [
+      {
+        "nome": "Automation - Get Icon",
+        "descricao": "Baixa o icone da automacao (conteudo binario)."
+      }
+    ],
+    "POST /api/v2/activity/{activityLabel}/icon": [
+      {
+        "nome": "Automation - Upload Icon",
+        "descricao": "Envia o icone da automacao.\n\n> A spec declara `application/json`, mas o envio real e `multipart/form-data` com o campo `file` - mesmo padrao dos demais uploads da API.",
+        "multipart": [
+          "file"
+        ]
+      }
+    ],
+    "GET /api/v2/activity/{label}/export": [
+      {
+        "nome": "Automation - Export",
+        "descricao": "Exporta a definicao da automacao em JSON. Util para versionar o cadastro ou replicar entre PROD e QA (junto com `Automation - Import`)."
+      }
+    ],
+    "POST /api/v2/activity/import": [
+      {
+        "nome": "Automation - Import",
+        "descricao": "Importa uma automacao a partir do JSON gerado pelo export. `multipart/form-data`, campo `file`.",
+        "multipart": [
+          "file"
+        ]
+      }
+    ],
+    "POST /api/v2/log": [
+      {
+        "nome": "Log - Create",
+        "descricao": "Cria a estrutura (as colunas) de um log. Rode **uma vez** por log.\n\n| Campo da coluna | Para que serve |\n|---|---|\n| `name` | Titulo exibido no portal |\n| `label` | Chave usada ao inserir entradas |\n| `width` | Largura sugerida da coluna, em pixels |\n\nO `activityLabel` informado aqui vira o identificador do log - e o valor de `{{logLabel}}` nas demais requests desta pasta.",
+        "exemplo": {
+          "organizationLabel": "{{organization}}",
+          "activityLabel": "log-demo",
+          "columns": [
+            {
+              "name": "Data/Hora",
+              "label": "col1",
+              "width": 200
+            },
+            {
+              "name": "Registro",
+              "label": "col2",
+              "width": 300
+            },
+            {
+              "name": "Status",
+              "label": "col3",
+              "width": 100
+            }
+          ]
+        },
+        "observacoes": [
+          "\"activityLabel\" vira o identificador do log (o {{logLabel}} das demais requests).",
+          "\"label\" de cada coluna e a chave usada ao inserir entradas; \"name\" e o titulo exibido."
+        ]
+      }
+    ],
+    "POST /api/v2/log/{logLabel}/entry": [
+      {
+        "nome": "Log - Create Entry",
+        "descricao": "Insere uma linha no log.\n\nO corpo e um dicionario **plano**, sem wrapper: as chaves sao os `label` das colunas definidas na criacao. Envie todos os valores como string.\n\nChaves que nao correspondem a nenhuma coluna sao ignoradas silenciosamente - se um valor nao aparecer no portal, confira se o `label` bate.",
+        "exemplo": {
+          "col1": "2026-01-15 10:30:00",
+          "col2": "Registro 'XYZ' processado",
+          "col3": "SUCCESS"
+        },
+        "observacoes": [
+          "As chaves sao os \"label\" das colunas definidas na criacao do log (nao os \"name\").",
+          "Todos os valores devem ser enviados como string."
+        ]
+      }
+    ],
+    "GET /api/v2/log": [
+      {
+        "nome": "Log - List",
+        "descricao": "Lista os logs da organizacao.\n\n> Este endpoint nao aparece no OpenAPI **nem** no SDK Python - foi observado apenas em uso. Se retornar `404` no seu servidor, use `Log - Fetch Header` com o label que voce ja conhece."
+      }
+    ],
+    "GET /api/v2/log/{logLabel}": [
+      {
+        "nome": "Log - Fetch Header",
+        "descricao": "Retorna a definicao do log (a lista de `columns`, cada uma com `label` e `name`).\n\nO SDK chama este endpoint antes de listar entradas justamente para traduzir os `label` de volta para nomes legiveis."
+      }
+    ],
+    "GET /api/v2/log/{logLabel}/entry-list": [
+      {
+        "nome": "Log - Fetch Entries",
+        "descricao": "Lista as entradas do log dentro da janela de `days`.\n\nCada item vem com um objeto `columns` chaveado pelos **labels** das colunas. Combine com `Log - Fetch Header` para exibir os nomes.",
+        "query_sugerida": {
+          "days": "7"
+        }
+      }
+    ],
+    "GET /api/v2/log/{logLabel}/export": [
+      {
+        "nome": "Log - Export",
+        "descricao": "Exporta as entradas do log como arquivo.",
+        "query_sugerida": {
+          "days": "7",
+          "format": "csv"
+        }
+      }
+    ],
+    "DELETE /api/v2/log/{logLabel}": [
+      {
+        "nome": "Log - Delete",
+        "descricao": "Exclui o log e **todas** as suas entradas. Operacao destrutiva e sem desfazer."
+      }
+    ],
+    "GET /api/v2/datapool": [
+      {
+        "nome": "Datapool - List",
+        "descricao": "Lista as filas da organizacao."
+      }
+    ],
+    "POST /api/v2/datapool": [
+      {
+        "nome": "Datapool - Create",
+        "descricao": "Cria uma fila.\n\n| Campo | Observacao |\n|---|---|\n| `consumptionPolicy` | `FIFO` (padrao) ou `LIFO` |\n| `trigger` | `NEVER` (padrao), `ALWAYS` ou `NO_TASK_ACTIVE`. Define se a insercao de item dispara a automacao |\n| `schema[].type` | `TEXT`, `INTEGER` ou `DOUBLE` |\n| `schema[].uniqueId` | Marca o campo que identifica o item (evita duplicidade) |\n| `schema[].displayValue` | Campo exibido na listagem do portal |\n| `autoRetry` / `maxAutoRetry` | Reprocessamento automatico de itens com erro |\n| `itemMaxProcessingTime` | Minutos ate o item cair em `TIMEOUT` |\n| `abortOnError` / `maxErrorsBeforeInactive` | Desativa a fila apos N erros |\n\n> O corpo envia `defaultAutomation`, mas a resposta devolve o mesmo dado como `defaultActivity`. A assimetria e da API.",
+        "exemplo": {
+          "label": "demo-datapool",
+          "name": "Demo Datapool",
+          "defaultAutomation": "{{automationLabel}}",
+          "consumptionPolicy": "FIFO",
+          "schema": [
+            {
+              "label": "product_name",
+              "type": "TEXT",
+              "uniqueId": true,
+              "displayValue": true
+            },
+            {
+              "label": "product_category",
+              "type": "TEXT",
+              "uniqueId": false,
+              "displayValue": false
+            },
+            {
+              "label": "product_value",
+              "type": "DOUBLE",
+              "uniqueId": false,
+              "displayValue": false
+            }
+          ],
+          "trigger": "NEVER",
+          "autoRetry": true,
+          "maxAutoRetry": 3,
+          "abortOnError": true,
+          "maxErrorsBeforeInactive": 0,
+          "enableProcessingTime": true,
+          "itemMaxProcessingTime": 10,
+          "active": true,
+          "repositoryLabel": "DEFAULT"
+        },
+        "observacoes": [
+          "\"schema\" define as colunas da fila. Marque uniqueId=true no campo que identifica",
+          "o item (evita duplicidade) e displayValue=true no que aparece na listagem do portal."
+        ]
+      }
+    ],
+    "GET /api/v2/datapool/{datapoolLabel}": [
+      {
+        "nome": "Datapool - Get",
+        "descricao": "Retorna a configuracao completa da fila, incluindo o campo `active`.\n\nRode esta request antes de ativar/desativar: o corpo daqueles endpoints e este mesmo objeto com o `active` alterado."
+      }
+    ],
+    "GET /api/v2/datapool/{datapoolLabel}/summary": [
+      {
+        "nome": "Datapool - Summary",
+        "descricao": "Contadores da fila por estado.\n\nA chave `countPending` e a que interessa na pratica: `countPending == 0` significa fila vazia (e o que o `is_empty()` do SDK verifica)."
+      }
+    ],
+    "GET /api/v2/datapool/{datapoolLabel}/view": [
+      {
+        "nome": "Datapool - View",
+        "descricao": "Retorna os itens da fila como exibidos no portal, com `id` e `state` de cada um.\n\nE o endpoint usado pelo utilitario interno `Finalizar datapool itens` para achar os itens `PENDING` e apaga-los em lote."
+      }
+    ],
+    "POST /api/v2/datapool/{datapoolLabel}": [
+      {
+        "nome": "Datapool - Activate",
+        "descricao": "Ativa a fila.\n\n**Nao existe endpoint dedicado.** Voce faz um `POST` no proprio datapool reenviando o objeto **inteiro** com `active: true`. Campos omitidos sao sobrescritos - rode `Datapool - Get` primeiro e edite a resposta.",
+        "exemplo": {
+          "label": "{{datapoolLabel}}",
+          "name": "Demo Datapool",
+          "defaultAutomation": "{{automationLabel}}",
+          "consumptionPolicy": "FIFO",
+          "schema": [
+            {
+              "label": "product_name",
+              "type": "TEXT",
+              "uniqueId": true,
+              "displayValue": true
+            }
+          ],
+          "trigger": "NEVER",
+          "autoRetry": true,
+          "maxAutoRetry": 3,
+          "abortOnError": true,
+          "maxErrorsBeforeInactive": 0,
+          "enableProcessingTime": true,
+          "itemMaxProcessingTime": 10,
+          "active": true,
+          "repositoryLabel": "DEFAULT"
+        },
+        "observacoes": [
+          "Nao existe endpoint dedicado para ativar: reenvie o objeto INTEIRO com active=true.",
+          "Dica: rode antes \"Datapool - Get\", copie a resposta e altere so o campo \"active\"."
+        ]
+      },
+      {
+        "nome": "Datapool - Deactivate",
+        "descricao": "Desativa a fila (mesma mecanica do *Activate*, com `active: false`).\n\nFila desativada nao entrega itens no `pull` e nao dispara o `trigger`.",
+        "exemplo": {
+          "label": "{{datapoolLabel}}",
+          "name": "Demo Datapool",
+          "defaultAutomation": "{{automationLabel}}",
+          "consumptionPolicy": "FIFO",
+          "schema": [
+            {
+              "label": "product_name",
+              "type": "TEXT",
+              "uniqueId": true,
+              "displayValue": true
+            }
+          ],
+          "trigger": "NEVER",
+          "autoRetry": true,
+          "maxAutoRetry": 3,
+          "abortOnError": true,
+          "maxErrorsBeforeInactive": 0,
+          "enableProcessingTime": true,
+          "itemMaxProcessingTime": 10,
+          "active": false,
+          "repositoryLabel": "DEFAULT"
+        },
+        "observacoes": [
+          "Nao existe endpoint dedicado para desativar: reenvie o objeto INTEIRO com active=false.",
+          "Dica: rode antes \"Datapool - Get\", copie a resposta e altere so o campo \"active\"."
+        ]
+      }
+    ],
+    "POST /api/v2/datapool/{datapoolLabel}/push": [
+      {
+        "nome": "Datapool - Add Item",
+        "descricao": "Insere um item na fila.\n\nAs chaves de `values` sao os `label` definidos no `schema` da fila. `priority` maior e consumido antes, dentro da politica configurada.\n\nSe o `trigger` da fila for `ALWAYS` ou `NO_TASK_ACTIVE`, esta chamada pode disparar a automacao automaticamente.",
+        "exemplo": {
+          "priority": 0,
+          "values": {
+            "product_name": "Smartphone",
+            "product_category": "Electronic",
+            "product_value": "2000"
+          }
+        },
+        "observacoes": [
+          "As chaves de \"values\" sao os \"label\" definidos no schema da fila."
+        ]
+      }
+    ],
+    "GET /api/v2/datapool/{datapoolLabel}/pull": [
+      {
+        "nome": "Datapool - Pull Next Item",
+        "descricao": "Consome o proximo item pendente, movendo-o para `PROCESSING`.\n\n### Atencao ao status 204\n**`204 No Content` (sem corpo) significa que a fila esta vazia**, nao que houve erro. E assim que o bot sabe que terminou o trabalho.\n\nA ordem de entrega segue a `consumptionPolicy` (`FIFO`/`LIFO`) e a `priority` dos itens."
+      }
+    ],
+    "GET /api/v2/datapool/{datapoolLabel}/entry/{entryId}": [
+      {
+        "nome": "Datapool - Get Entry",
+        "descricao": "Retorna um item especifico da fila com todos os campos (estado, valores, tentativas, runner, datas).\n\nUse antes de atualizar: o `POST` de atualizacao espera o objeto completo."
+      }
+    ],
+    "POST /api/v2/datapool/{datapoolLabel}/entry/{entryId}": [
+      {
+        "nome": "Datapool - Update Entry (Report Done/Error)",
+        "descricao": "Atualiza o item. E por aqui que o bot reporta o resultado do processamento.\n\n- **Concluir:** `state: \"DONE\"` + `message` descritiva\n- **Falhar:** `state: \"ERROR\"` + `errorType: \"SYSTEM\"` (falha tecnica) ou `\"BUSINESS\"` (regra de negocio)\n\nRepare na grafia **`dataPoolLabel`** (com `P` maiusculo) no corpo, diferente do `datapool` do path.\n\nOs campos `dateRegister`, `dateProcessing` e `dateFinished` sao somente leitura - nao os reenvie.",
+        "exemplo": {
+          "dataPoolLabel": "{{datapoolLabel}}",
+          "state": "DONE",
+          "priority": 0,
+          "values": {
+            "product_name": "Smartphone"
+          },
+          "uniqueKey": "Smartphone",
+          "displayValue": "Smartphone",
+          "message": "Processado com sucesso",
+          "errorType": null,
+          "retryIndex": 0,
+          "runner": "{{runnerId}}",
+          "taskId": "{{taskId}}",
+          "parent": null,
+          "child": null
+        },
+        "observacoes": [
+          "Envie o objeto completo do item (rode \"Datapool - Get Entry\" antes e ajuste).",
+          "Para concluir: state=DONE. Para falhar: state=ERROR + errorType=SYSTEM|BUSINESS.",
+          "Transicoes validas: PENDING -> PROCESSING|CANCELED ; PROCESSING -> DONE|ERROR|TIMEOUT ; TIMEOUT -> DONE|ERROR"
+        ]
+      }
+    ],
+    "PUT /api/v2/datapool/{datapoolLabel}/entry/{entryId}/cancel": [
+      {
+        "nome": "Datapool - Cancel Entry",
+        "descricao": "Cancela um item.\n\n**So funciona em itens no estado `PENDING`.** Item ja em `PROCESSING` nao pode ser cancelado por aqui.\n\nCuriosidade: e o unico `PUT` de toda a API v2.",
+        "exemplo": {
+          "state": "CANCELED",
+          "message": "Cancelado manualmente."
+        },
+        "observacoes": [
+          "So funciona em itens no estado PENDING."
+        ]
+      }
+    ],
+    "DELETE /api/v2/datapool/{datapoolLabel}/entry/{entryId}": [
+      {
+        "nome": "Datapool - Delete Entry",
+        "descricao": "Exclui um item da fila.\n\nPermitido nos estados `PENDING`, `CANCELED`, `DONE` e `ERROR`. Itens em `PROCESSING` ou `TIMEOUT` precisam ser resolvidos antes.\n\nE o endpoint que o utilitario `Finalizar datapool itens` usa para limpar a fila em lote."
+      }
+    ],
+    "DELETE /api/v2/datapool/{datapoolLabel}": [
+      {
+        "nome": "Datapool - Delete",
+        "descricao": "Exclui a fila inteira, com todos os seus itens. Operacao destrutiva e sem desfazer."
+      }
+    ],
+    "GET /api/v2/credential": [
+      {
+        "nome": "Credential - List",
+        "descricao": "Lista os cofres da organizacao (sem expor os valores dos segredos)."
+      }
+    ],
+    "GET /api/v2/credential/pagination": [
+      {
+        "nome": "Credential - List (Paginated)",
+        "descricao": "Versao paginada da listagem de cofres.",
+        "query_sugerida": {
+          "size": "50",
+          "page": "0",
+          "sort": "label,asc"
+        }
+      }
+    ],
+    "GET /api/v2/credential/{label}": [
+      {
+        "nome": "Credential - Get Vault",
+        "descricao": "Retorna o cofre com a lista de `secrets`.\n\nUse esta request como ponto de partida para **editar ou remover** uma chave: copie a lista, ajuste e reenvie em `Credential - Edit Vault`."
+      }
+    ],
+    "GET /api/v2/credential/{label}/key/{key}": [
+      {
+        "nome": "Credential - Get Key",
+        "descricao": "Le o valor de uma chave especifica.\n\n### A resposta e texto puro\nNao vem JSON: o corpo e literalmente o valor do segredo. O SDK Python faz `str(req.text)` direto.\n\n**Nao logue, nao salve em variavel de ambiente compartilhada e nao versione a resposta.**"
+      }
+    ],
+    "POST /api/v2/credential": [
+      {
+        "nome": "Credential - Create",
+        "descricao": "Cria um cofre com uma ou mais chaves.\n\nSe o cofre ja existir, use `Credential - Add/Update Key` (para uma chave) ou `Credential - Edit Vault` (para substituir a lista inteira).",
+        "exemplo": {
+          "label": "MinhaCredencial",
+          "organizationLabel": "{{organization}}",
+          "repositoryLabel": "DEFAULT",
+          "secrets": [
+            {
+              "key": "user",
+              "value": "usuario123"
+            },
+            {
+              "key": "password",
+              "value": "senha123"
+            }
+          ]
+        }
+      }
+    ],
+    "POST /api/v2/credential/{label}/key": [
+      {
+        "nome": "Credential - Add/Update Key",
+        "descricao": "Adiciona uma chave a um cofre existente. Se a chave ja existir, o valor e atualizado.\n\nRequer Maestro >= 2.0.0.",
+        "exemplo": {
+          "key": "password",
+          "value": "senha123"
+        },
+        "observacoes": [
+          "Adiciona uma chave ao cofre existente (ou atualiza, se a chave ja existir)."
+        ]
+      }
+    ],
+    "POST /api/v2/credential/{label}": [
+      {
+        "nome": "Credential - Edit Vault",
+        "descricao": "Substitui a lista **inteira** de `secrets` do cofre. Requer Maestro >= 3.0.0.\n\n### Como remover uma chave\nNao existe endpoint de exclusao de chave individual. O caminho e:\n1. `Credential - Get Vault`\n2. Remova o item indesejado da lista `secrets`\n3. Reenvie a lista completa aqui\n\nChaves omitidas no corpo **sao perdidas** - e exatamente assim que o `remove_credential()` do SDK funciona.",
+        "exemplo": {
+          "label": "{{credentialVault}}",
+          "organizationLabel": "{{organization}}",
+          "repositoryLabel": "DEFAULT",
+          "secrets": [
+            {
+              "key": "user",
+              "value": "usuario123"
+            },
+            {
+              "key": "password",
+              "value": "nova-senha"
+            }
+          ]
+        },
+        "observacoes": [
+          "Substitui a lista INTEIRA de secrets do cofre.",
+          "Para REMOVER uma chave: rode \"Credential - Get Vault\", apague o item da lista e reenvie aqui."
+        ]
+      }
+    ],
+    "DELETE /api/v2/credential/{label}": [
+      {
+        "nome": "Credential - Delete Vault",
+        "descricao": "Exclui o cofre inteiro, com todas as suas chaves. Operacao destrutiva.\n\nAutomacoes que dependem deste cofre passam a falhar imediatamente."
+      }
+    ],
+    "GET /api/v2/credential/hs": [
+      {
+        "nome": "Credential - List (Front)",
+        "descricao": "Variante da listagem usada internamente pelo portal. Sem utilidade pratica para integracoes - documentada por completude."
+      }
+    ],
+    "GET /api/v2/credential/{label}/hs": [
+      {
+        "nome": "Credential - Get Vault (Front)",
+        "descricao": "Variante do detalhe do cofre usada internamente pelo portal. Documentada por completude."
+      }
+    ],
+    "GET /api/v2/error": [
+      {
+        "nome": "Error - List",
+        "descricao": "Lista os erros registrados, com paginacao.",
+        "query_sugerida": {
+          "days": "7",
+          "size": "50",
+          "page": "0",
+          "sort": "dateCreation,desc"
+        }
+      },
+      {
+        "nome": "Error - Get Automation Errors",
+        "descricao": "Mesmo endpoint da listagem, pre-filtrado por automacao. Atalho para investigar o historico de falhas de um robo especifico.",
+        "query_sugerida": {
+          "automationLabel": "{{automationLabel}}",
+          "days": "30"
+        }
+      }
+    ],
+    "GET /api/v2/error/{id}": [
+      {
+        "nome": "Error - Get",
+        "descricao": "Detalhe do erro: tipo, mensagem, stack trace completo, tags e a lista de anexos disponiveis."
+      }
+    ],
+    "POST /api/v2/error": [
+      {
+        "nome": "Error - Create",
+        "descricao": "Registra uma excecao. Retorna `201` com o `id` do erro criado.\n\n> O corpo aqui e o que os SDKs realmente enviam. O `ErrorDTO` declarado na spec (`{key, message, details}`) descreve o formato de erro HTTP, nao este endpoint - siga o exemplo acima.\n\n`tags` e um dicionario livre. Os SDKs preenchem por padrao com `user_name`, `host_name`, `os_name`, `os_version` e a versao da linguagem, o que ajuda bastante a correlacionar falhas por maquina.",
+        "exemplo": {
+          "taskId": "{{taskId}}",
+          "type": "ValueError",
+          "message": "invalid literal for int() with base 10: 'abc'",
+          "stackTrace": "Traceback (most recent call last): ...",
+          "language": "PYTHON",
+          "tags": {
+            "user_name": "rpa.usuario",
+            "host_name": "RPAPROD0001",
+            "os_name": "Windows",
+            "os_version": "10.0.26100",
+            "python_version": "3.11.5"
+          }
+        },
+        "observacoes": [
+          "Formato real enviado pelos SDKs (o ErrorDTO da spec descreve outra coisa).",
+          "\"language\": PYTHON | JAVASCRIPT | JAVA. \"tags\" e um dicionario livre de metadados."
+        ]
+      }
+    ],
+    "POST /api/v2/error/{id}/screenshot": [
+      {
+        "nome": "Error - Upload Screenshot",
+        "descricao": "Anexa o screenshot ao erro. `multipart/form-data`, campo `file`.\n\nRode depois de `Error - Create`, usando o `id` retornado.",
+        "multipart": [
+          "file"
+        ]
+      }
+    ],
+    "GET /api/v2/error/{id}/screenshot": [
+      {
+        "nome": "Error - Get Screenshot",
+        "descricao": "Baixa o screenshot do erro (binario)."
+      }
+    ],
+    "POST /api/v2/error/{id}/attachments": [
+      {
+        "nome": "Error - Upload Attachment",
+        "descricao": "Anexa um arquivo ao erro. `multipart/form-data`, campo `file`.\n\nPara varios anexos, repita a chamada - a API aceita **um arquivo por requisicao**.",
+        "multipart": [
+          "file"
+        ]
+      }
+    ],
+    "GET /api/v2/error/{id}/attachments/{attachmentIndex}": [
+      {
+        "nome": "Error - Get Attachment",
+        "descricao": "Baixa um anexo pelo **indice** (base 0), nao pelo nome. A ordem e a de upload; consulte `Error - Get` para ver a lista."
+      }
+    ],
+    "GET /api/v2/artifact": [
+      {
+        "nome": "Result File - List",
+        "descricao": "Lista os arquivos de resultado, com paginacao e filtros por tarefa, automacao e nome.",
+        "query_sugerida": {
+          "days": "7",
+          "size": "50",
+          "page": "0",
+          "sort": "dateCreation,desc"
+        }
+      }
+    ],
+    "GET /api/v2/artifact/{artifactId}": [
+      {
+        "nome": "Result File - Get Register",
+        "descricao": "Metadados do artefato: `fileName`, `taskId`, `type` (`INPUT` ou `RESULT`), usuario e data de criacao. Nao traz o conteudo."
+      }
+    ],
+    "GET /api/v2/artifact/{artifactId}/file": [
+      {
+        "nome": "Result File - Get File",
+        "descricao": "Baixa o conteudo binario do arquivo."
+      }
+    ],
+    "POST /api/v2/artifact": [
+      {
+        "nome": "Result File - Create Register",
+        "descricao": "**Etapa 1 de 2 do upload.** Cria o registro do artefato e devolve o `id`.\n\nNenhum byte de arquivo e enviado aqui - so o metadado. Em seguida rode `Result File - Upload File`.",
+        "exemplo": {
+          "taskId": "{{taskId}}",
+          "name": "relatorio.pdf",
+          "filename": "relatorio.pdf"
+        },
+        "observacoes": [
+          "Etapa 1 de 2: cria o registro e devolve o \"id\".",
+          "Em seguida rode \"Result File - Upload File\" enviando o binario para esse id."
+        ]
+      }
+    ],
+    "POST /api/v2/artifact/log/{artifactId}": [
+      {
+        "nome": "Result File - Upload File",
+        "descricao": "**Etapa 2 de 2 do upload.** Envia o binario para o registro criado na etapa anterior. `multipart/form-data`, campo `file`.\n\nO `log` no path nao tem relacao com logs de execucao - e apenas o nome do endpoint.\n\nGaranta que a extensao do arquivo casa com o `filename` informado no registro; o SDK chega a acrescentar a extensao automaticamente quando ela falta.",
+        "multipart": [
+          "file"
+        ]
+      }
+    ],
+    "GET /api/v2/alerts": [
+      {
+        "nome": "Alert - List",
+        "descricao": "Lista os alertas, com paginacao e filtros por tipo, tarefa e automacao.\n\nRepare que o path e **plural** (`/alerts`), diferente das demais areas.",
+        "query_sugerida": {
+          "days": "30",
+          "size": "50",
+          "page": "0",
+          "sort": "dateCreation,desc"
+        }
+      },
+      {
+        "nome": "Alert - Get Warnings",
+        "descricao": "Mesmo endpoint da listagem, pre-filtrado em `type=WARN`. Troque para `ERROR` ou `INFO` conforme a necessidade.",
+        "query_sugerida": {
+          "type": "WARN",
+          "days": "60",
+          "size": "50",
+          "page": "0",
+          "sort": "dateCreation,desc"
+        }
+      }
+    ],
+    "GET /api/v2/alerts/{id}": [
+      {
+        "nome": "Alert - Get",
+        "descricao": "Detalhe de um alerta especifico."
+      }
+    ],
+    "POST /api/v2/alerts": [
+      {
+        "nome": "Alert - Create",
+        "descricao": "Cria um alerta associado a uma tarefa.\n\n`type`: `INFO` (informativo) | `WARN` (atencao) | `ERROR` (falha).\n\nDependendo da configuracao da automacao, alertas disparam notificacao por e-mail aos usuarios vinculados.",
+        "exemplo": {
+          "taskId": "{{taskId}}",
+          "title": "Atencao",
+          "message": "Fila acima do limite esperado.",
+          "type": "WARN"
+        },
+        "observacoes": [
+          "\"type\": INFO | WARN | ERROR"
+        ]
+      }
+    ],
+    "GET /api/v2/alerts/count": [
+      {
+        "nome": "Alert - Count",
+        "descricao": "Contadores agregados de alertas: total, `error`, `warn` e `info`."
+      }
+    ],
+    "GET /api/v2/alerts/analytics/count": [
+      {
+        "nome": "Alert - Analytics Count",
+        "descricao": "Contagem de alertas no periodo, para os graficos do Operation Center.",
+        "query_sugerida": {
+          "startDate": "2026-01-01",
+          "endDate": "2026-12-31"
+        }
+      }
+    ],
+    "GET /api/v2/machine/": [
+      {
+        "nome": "Runner - List",
+        "descricao": "Lista os runners da organizacao.\n\n> Atencao a **barra final** no path (`/api/v2/machine/`). Sem ela o roteamento cai em outra operacao."
+      }
+    ],
+    "GET /api/v2/machine/pagination": [
+      {
+        "nome": "Runner - List (Paginated)",
+        "descricao": "Listagem paginada de runners, com filtros de status e busca.",
+        "query_sugerida": {
+          "size": "50",
+          "page": "0"
+        }
+      }
+    ],
+    "GET /api/v2/machine/{machineId}": [
+      {
+        "nome": "Runner - Get Info",
+        "descricao": "Detalhes do runner, incluindo o objeto `metrics`:\n\n`os`, `osVersion`, `systemUptime`, `cpuArchitecture`, `cpuUsagePercentage`, `memoryFree`, `memoryTotal`, `memoryUsagePercentage`, `javaVersion`, `runnerUptime`, `runnerVersion`, `lastTaskID` e `tasksProcessed`."
+      }
+    ],
+    "GET /api/v2/machine/{machineId}/tasks-summary": [
+      {
+        "nome": "Runner - Get Tasks Summary",
+        "descricao": "Resumo diario de tarefas executadas por este runner na janela de `days`. Bom para identificar ociosidade ou sobrecarga.",
+        "query_sugerida": {
+          "days": "30"
+        }
+      }
+    ],
+    "GET /api/v2/machine/log/{machineId}": [
+      {
+        "nome": "Runner - Get Log",
+        "descricao": "Baixa o arquivo de log do runner.\n\nE o primeiro lugar a olhar quando o runner aparece offline ou nao pega tarefas."
+      }
+    ],
+    "POST /api/v2/machine/log/{machineId}": [
+      {
+        "nome": "Runner - Upload Log",
+        "descricao": "Envia o log do runner. Usado pelo proprio agente do runner; raramente necessario em integracoes.",
+        "multipart": [
+          "file"
+        ]
+      }
+    ],
+    "GET /api/v2/machine/screenshot/{machineId}": [
+      {
+        "nome": "Runner - Get Screenshot",
+        "descricao": "Baixa o screenshot mais recente da maquina (stream binario). Disponivel para runners `DESKTOP`."
+      }
+    ],
+    "POST /api/v2/machine/screenshot/{machineId}": [
+      {
+        "nome": "Runner - Upload Screenshot",
+        "descricao": "Envia um screenshot da maquina. Usado pelo agente do runner.\n\n> A spec declara o corpo como `string`; o envio real segue o padrao `multipart/form-data` dos demais uploads.",
+        "multipart": [
+          "file"
+        ]
+      }
+    ],
+    "POST /api/v2/machine": [
+      {
+        "nome": "Runner - Register",
+        "descricao": "Registra um novo runner na organizacao.\n\nNormalmente feito pelo instalador do runner, nao manualmente. O corpo abaixo foi gerado a partir do schema `MachineDTO` do OpenAPI - envie apenas os campos que fizerem sentido."
+      }
+    ],
+    "POST /api/v2/machine/{machineId}": [
+      {
+        "nome": "Runner - Edit",
+        "descricao": "Edita a configuracao do runner (nome, tipo, automacoes habilitadas). Corpo gerado a partir do schema `MachineDTO`."
+      }
+    ],
+    "DELETE /api/v2/machine/{machineId}": [
+      {
+        "nome": "Runner - Delete",
+        "descricao": "Remove o runner da organizacao. As automacoes vinculadas a ele deixam de ter onde executar - revise os vinculos antes."
+      }
+    ],
+    "GET /api/v2/machine/analytics/status-count": [
+      {
+        "nome": "Runner - Analytics Status Count",
+        "descricao": "Contagem de runners por status no periodo.",
+        "query_sugerida": {
+          "startDate": "2026-01-01",
+          "endDate": "2026-12-31"
+        }
+      }
+    ],
+    "GET /api/v2/machine/analytics/tasks-by-runner": [
+      {
+        "nome": "Runner - Analytics Tasks By Runner",
+        "descricao": "Distribuicao de tarefas executadas por runner no periodo. Ajuda a avaliar balanceamento de carga.",
+        "query_sugerida": {
+          "startDate": "2026-01-01",
+          "endDate": "2026-12-31"
+        }
+      }
+    ],
+    "GET /api/v2/scheduling": [
+      {
+        "nome": "Schedule - List",
+        "descricao": "Lista os agendamentos, com paginacao e filtros.",
+        "query_sugerida": {
+          "size": "50",
+          "page": "0"
+        }
+      }
+    ],
+    "GET /api/v2/scheduling/{schedulingId}": [
+      {
+        "nome": "Schedule - Get",
+        "descricao": "Detalhes de um agendamento: cron, automacao alvo, parametros fixos, prioridade e se esta ativo."
+      }
+    ],
+    "POST /api/v2/scheduling": [
+      {
+        "nome": "Schedule - Create",
+        "descricao": "Cria um agendamento.\n\nApenas `activityLabel` e `cron` sao obrigatorios. O `NewSchedulingDTO` aceita ainda os campos do construtor visual do portal (`scheduleName`, `scheduleType`, `startSpecificDate`, `timeRepeat`, `daysRepeat`, `weekRepeat`, `atTime`, `dayOfMouth`, `executionType`, `schedulingFrequency`, `customRepeat`).\n\n> O campo `dayOfMouth` tem esse typo na propria API - nao e erro da collection.\n\nValide a expressao antes com `Schedule - Validate Cron`.",
+        "exemplo": {
+          "activityLabel": "{{automationLabel}}",
+          "organizationLabel": "{{organization}}",
+          "repositoryLabel": "DEFAULT",
+          "active": true,
+          "priority": 0,
+          "cron": "0 0 */1 * * *",
+          "schedulingStrategy": "Every hour",
+          "parameters": {}
+        },
+        "observacoes": [
+          "O cron tem 6 campos (inclui segundos, padrao Spring): seg min hora dia mes dia-semana.",
+          "Exemplos: \"0 0 */1 * * *\" = de hora em hora | \"0 30 8 * * MON-FRI\" = 08:30 em dias uteis.",
+          "Apenas activityLabel e cron sao obrigatorios; o restante o portal preenche."
+        ]
+      }
+    ],
+    "POST /api/v2/scheduling/{schedulingId}": [
+      {
+        "nome": "Schedule - Update",
+        "descricao": "Atualiza um agendamento existente. Mesmo formato de corpo do *Create*.\n\nPara apenas pausar, envie `\"active\": false` - nao precisa excluir.",
+        "exemplo": {
+          "activityLabel": "{{automationLabel}}",
+          "organizationLabel": "{{organization}}",
+          "repositoryLabel": "DEFAULT",
+          "active": true,
+          "priority": 0,
+          "cron": "0 0 */1 * * *",
+          "schedulingStrategy": "Every hour",
+          "parameters": {}
+        },
+        "observacoes": [
+          "O cron tem 6 campos (inclui segundos, padrao Spring): seg min hora dia mes dia-semana.",
+          "Exemplos: \"0 0 */1 * * *\" = de hora em hora | \"0 30 8 * * MON-FRI\" = 08:30 em dias uteis.",
+          "Apenas activityLabel e cron sao obrigatorios; o restante o portal preenche."
+        ]
+      }
+    ],
+    "DELETE /api/v2/scheduling/{schedulingId}": [
+      {
+        "nome": "Schedule - Delete",
+        "descricao": "Exclui o agendamento. Para suspender temporariamente, prefira o *Update* com `active: false`."
+      }
+    ],
+    "POST /api/v2/scheduling/validate-cron": [
+      {
+        "nome": "Schedule - Validate Cron",
+        "descricao": "Valida uma expressao cron e retorna um booleano. Rode antes de criar ou atualizar um agendamento.",
+        "exemplo": {
+          "cronExpression": "0 0 */1 * * *"
+        },
+        "observacoes": [
+          "Retorna um booleano indicando se a expressao e valida.",
+          "A chave do corpo e cronExpression; com \"cron\" o servidor responde 400."
+        ]
+      }
+    ],
+    "GET /api/v2/scheduling/count": [
+      {
+        "nome": "Schedule - Count",
+        "descricao": "Contadores de agendamentos: total, ativos e inativos."
+      }
+    ],
+    "GET /api/v2/scheduling/occurrences": [
+      {
+        "nome": "Schedule - Occurrences",
+        "descricao": "Ocorrencias previstas/realizadas agrupadas por dia. E o que monta o calendario de agendamentos do portal.",
+        "query_sugerida": {
+          "startDate": "2026-01-01",
+          "endDate": "2026-12-31"
+        }
+      }
+    ],
+    "GET /api/v2/scheduling/occurrences/peak-scheduling-days": [
+      {
+        "nome": "Schedule - Peak Scheduling Days",
+        "descricao": "Dias de pico de agendamentos no periodo. Ajuda a identificar concentracao de carga e planejar redistribuicao.",
+        "query_sugerida": {
+          "startDate": "2026-01-01",
+          "endDate": "2026-12-31"
+        }
+      }
+    ],
+    "GET /api/v2/scheduling/occurrences/top-automations": [
+      {
+        "nome": "Schedule - Top Automations",
+        "descricao": "Automacoes com mais ocorrencias agendadas no periodo.",
+        "query_sugerida": {
+          "startDate": "2026-01-01",
+          "endDate": "2026-12-31"
+        }
+      }
+    ],
+    "GET /api/v2/scheduling/occurrences/top-runners": [
+      {
+        "nome": "Schedule - Top Runners",
+        "descricao": "Runners mais demandados por agendamentos no periodo. `limit` controla o tamanho do ranking (padrao 3).",
+        "query_sugerida": {
+          "limit": "3",
+          "startDate": "2026-01-01",
+          "endDate": "2026-12-31"
+        }
+      }
+    ],
+    "GET /api/v2/scheduling/analytics/active/count": [
+      {
+        "nome": "Schedule - Analytics Active Count",
+        "descricao": "Quantidade de agendamentos ativos no periodo.",
+        "query_sugerida": {
+          "startDate": "2026-01-01",
+          "endDate": "2026-12-31"
+        }
+      }
+    ],
+    "GET /api/v2/bot": [
+      {
+        "nome": "Bot - List",
+        "descricao": "Lista os deploys de bots. Aceita filtro por `botId` e `repositories`."
+      }
+    ],
+    "GET /api/v2/bot/pagination": [
+      {
+        "nome": "Bot - List (Paginated)",
+        "descricao": "Listagem paginada de bots, com filtros por repositorio e busca.",
+        "query_sugerida": {
+          "size": "50",
+          "page": "0"
+        }
+      }
+    ],
+    "GET /api/v2/bot/{botId}": [
+      {
+        "nome": "Bot - Get Released",
+        "descricao": "Retorna a versao **publicada** (released) do bot no repositorio informado - ou seja, a que os runners estao executando hoje.",
+        "query_sugerida": {
+          "repository": "DEFAULT"
+        }
+      }
+    ],
+    "GET /api/v2/bot/{botId}/version/{botVersion}": [
+      {
+        "nome": "Bot - Get Version",
+        "descricao": "Detalhes de uma versao especifica do deploy, publicada ou nao."
+      }
+    ],
+    "POST /api/v2/bot": [
+      {
+        "nome": "Bot - Deploy",
+        "descricao": "Cria um novo deploy (registro da versao do bot). Corpo gerado a partir do schema `DeployDTO` do OpenAPI.\n\nDepois deste passo, envie o pacote com `Bot - Upload Package`."
+      }
+    ],
+    "POST /api/v2/bot/upload/{botId}/version/{botVersion}": [
+      {
+        "nome": "Bot - Upload Package",
+        "descricao": "Envia o pacote binario da automacao para a versao indicada. `multipart/form-data`, campo `file`.",
+        "multipart": [
+          "file"
+        ]
+      }
+    ],
+    "POST /api/v2/bot/release": [
+      {
+        "nome": "Bot - Release",
+        "descricao": "Publica uma versao ja enviada, tornando-a a versao ativa para os runners. Corpo gerado a partir do schema `DeployDTO`."
+      }
+    ],
+    "POST /api/v2/bot/update": [
+      {
+        "nome": "Bot - Update",
+        "descricao": "Atualiza os metadados de um deploy existente. Corpo gerado a partir do schema `DeployDTO`."
+      }
+    ],
+    "GET /api/v2/bot/{idDeploy}/version/{version}/download": [
+      {
+        "nome": "Bot - Download Package",
+        "descricao": "Baixa o pacote binario de uma versao do bot.\n\nUtil para auditar o que exatamente esta rodando em producao.",
+        "query_sugerida": {
+          "fileName": "bot.zip"
+        }
+      }
+    ],
+    "DELETE /api/v2/bot/{botId}/version/{botVersion}": [
+      {
+        "nome": "Bot - Delete Version",
+        "descricao": "**`[legado]`** Exclui uma versao do deploy.\n\n> Este endpoint **nao consta no OpenAPI atual**. Estava na versao anterior desta collection e foi mantido, mas pode ter sido removido do servidor - valide antes de depender dele em automacao de esteira."
+      }
+    ],
+    "GET /api/v2/agent": [
+      {
+        "nome": "Agent - List",
+        "descricao": "Lista os agents da organizacao."
+      }
+    ],
+    "GET /api/v2/agent/{botId}": [
+      {
+        "nome": "Agent - Get",
+        "descricao": "Detalhes de um agent. O path param chama-se `botId` no contrato da API."
+      }
+    ],
+    "POST /api/v2/message": [
+      {
+        "nome": "Message - Send",
+        "descricao": "Envia uma mensagem.\n\n| Campo | Observacao |\n|---|---|\n| `emails` | Lista de e-mails externos |\n| `logins` | Lista de usuarios do Maestro |\n| `type` | `TEXT` ou `HTML` |\n| `group` | Grupo de destinatarios. Envie string vazia, nunca `null` |\n\nVoce pode usar `emails` e `logins` na mesma chamada.",
+        "exemplo": {
+          "emails": [
+            "destinatario@empresa.com"
+          ],
+          "logins": [],
+          "subject": "Relatorio diario do RPA",
+          "body": "<h1>Processamento concluido</h1><p>100 itens processados.</p>",
+          "type": "HTML",
+          "group": ""
+        },
+        "observacoes": [
+          "Envia e-mail/notificacao. \"emails\" para destinatarios externos e",
+          "\"logins\" para usuarios do Maestro. \"type\": TEXT | HTML."
+        ]
+      }
+    ],
+    "GET /api/v2/audit": [
+      {
+        "nome": "Audit - List",
+        "descricao": "Lista os registros de auditoria, com paginacao.\n\nFiltros disponiveis: `source`, `type`, `user`, `dateStart` e `dateEnd`.",
+        "query_sugerida": {
+          "size": "50",
+          "page": "0"
+        }
+      }
+    ],
+    "GET /api/v2/audit/{type}": [
+      {
+        "nome": "Audit - Get By Type",
+        "descricao": "Retorna os registros de auditoria de um tipo especifico.",
+        "query_sugerida": {
+          "limit": "50"
+        }
+      }
+    ],
+    "POST /api/v2/audit": [
+      {
+        "nome": "Audit - Register",
+        "descricao": "Registra um evento de auditoria. Corpo gerado a partir do schema `AuditRequestDTO` do OpenAPI."
+      }
+    ],
+    "POST /private/audit": [
+      {
+        "nome": "Audit - Register (Private)",
+        "descricao": "Endpoint interno de auditoria. Diferente do publico, aceita `authorEmail` - ou seja, permite registrar em nome de outro usuario.\n\n> Note que o path **nao** comeca com `/api/v2`. Uso interno da plataforma; documentado por completude."
+      }
+    ],
+    "GET /api/v2/event/list": [
+      {
+        "nome": "Event - List By Organization",
+        "descricao": "Lista os eventos registrados pela organizacao."
+      }
+    ],
+    "GET /api/v2/event/{type}": [
+      {
+        "nome": "Event - Get By Type",
+        "descricao": "Retorna eventos de um tipo especifico.",
+        "query_sugerida": {
+          "limit": "50"
+        }
+      }
+    ],
+    "POST /api/v2/event": [
+      {
+        "nome": "Event - Register",
+        "descricao": "Registra um evento. Corpo gerado a partir do schema `EventRequestDTO`."
+      }
+    ],
+    "POST /api/v2/log/event": [
+      {
+        "nome": "Event - Register Log (DEPRECATED)",
+        "descricao": "**Deprecated na propria spec.**\n\nApesar do prefixo `/log`, pertence ao controller de eventos - nao tem relacao com os logs de execucao da pasta *Logs*. Use `Event - Register`."
+      }
+    ],
+    "POST /api/v2/log/studio": [
+      {
+        "nome": "Event - Register Studio (DEPRECATED)",
+        "descricao": "**Deprecated na propria spec.** Telemetria do BotCity Studio. Mesma ressalva do endpoint anterior quanto ao prefixo `/log`."
+      }
+    ],
+    "GET /api/v2/download/{item}/latest": [
+      {
+        "nome": "Download - Get Latest",
+        "descricao": "Retorna a versao mais recente disponivel de um item da plataforma (por exemplo o instalador do runner ou do studio)."
+      }
+    ]
+  }
+}

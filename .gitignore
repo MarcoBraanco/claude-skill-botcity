@@ -1,0 +1,8 @@
+# O config.json guarda as chaves de acesso do Maestro. O setup grava
+# em ~/.botcity/config.json; se houver um config.json legado aqui na
+# pasta da skill, ele nunca deve ser versionado nem publicado.
+config.json
+__pycache__/
+*.pyc
+*.bak
+.botcity_plano.json

@@ -1,0 +1,21 @@
+{
+  "_comentario": "Modelo do config. O setup (scripts/configurar.py criar) grava o config real em ~/.botcity/config.json. A chave de acesso pode ficar fora do arquivo, na variavel de ambiente BOTCITY_KEY_<AMBIENTE> (ex.: BOTCITY_KEY_PROD). Nunca versione nem publique o config real.",
+  "servidor": "https://SEU-WORKSPACE.botcity.dev",
+  "ambiente_padrao": "PROD",
+  "repositorio_padrao": "DEFAULT",
+  "sufixo_versao": "c",
+  "pasta_downloads": "C:/BotCity/downloads",
+  "raizes_projetos": [
+    "C:/Projetos"
+  ],
+  "ambientes": {
+    "PROD": {
+      "workspace": "seu-workspace",
+      "chave": "DEFINA_BOTCITY_KEY_OU_COLE_A_CHAVE_AQUI"
+    },
+    "QA": {
+      "workspace": "seu-workspace-homolog",
+      "chave": "DEFINA_BOTCITY_KEY_OU_COLE_A_CHAVE_AQUI"
+    }
+  }
+}

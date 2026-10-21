@@ -1,0 +1,69 @@
+{
+  "_comentario": "Fontes oficiais consultadas por scripts/docs_oficiais.py. Se uma URL mudar, o script procura a pagina nova no sitemap pelo slug e pelo titulo (h1) e grava a URL nova aqui.",
+  "site": "https://documentation.botcity.dev",
+  "sitemap": "https://documentation.botcity.dev/sitemap.xml",
+  "pypi": "https://pypi.org/pypi/botcity-maestro-sdk/json",
+  "spec_url": "https://developers.botcity.dev/v3/api-docs",
+  "paginas": {
+    "sdk_python": {
+      "url": "https://documentation.botcity.dev/maestro/maestro-sdk/python/",
+      "tipo": "referencia",
+      "slug": "python",
+      "titulo": "Python API"
+    },
+    "api": {
+      "url": "https://documentation.botcity.dev/maestro/maestro-api/maestro-api/",
+      "tipo": "swagger",
+      "slug": "maestro-api",
+      "titulo": "Full API"
+    },
+    "setup": {
+      "url": "https://documentation.botcity.dev/maestro/maestro-sdk/setup/",
+      "tipo": "guia",
+      "slug": "setup",
+      "titulo": "Setup"
+    },
+    "tarefas": {
+      "url": "https://documentation.botcity.dev/maestro/maestro-sdk/task/",
+      "tipo": "guia",
+      "slug": "task",
+      "titulo": "Tasks"
+    },
+    "logs": {
+      "url": "https://documentation.botcity.dev/maestro/maestro-sdk/log/",
+      "tipo": "guia",
+      "slug": "log",
+      "titulo": "Logs"
+    },
+    "alertas": {
+      "url": "https://documentation.botcity.dev/maestro/maestro-sdk/alerts-and-messages/",
+      "tipo": "guia",
+      "slug": "alerts-and-messages",
+      "titulo": "Alerts"
+    },
+    "credenciais": {
+      "url": "https://documentation.botcity.dev/maestro/maestro-sdk/credential/",
+      "tipo": "guia",
+      "slug": "credential",
+      "titulo": "Credentials"
+    },
+    "datapool": {
+      "url": "https://documentation.botcity.dev/maestro/maestro-sdk/datapool/",
+      "tipo": "guia",
+      "slug": "datapool",
+      "titulo": "Datapool"
+    },
+    "erros": {
+      "url": "https://documentation.botcity.dev/maestro/maestro-sdk/error/",
+      "tipo": "guia",
+      "slug": "error",
+      "titulo": "Errors"
+    },
+    "artefatos": {
+      "url": "https://documentation.botcity.dev/maestro/maestro-sdk/result-files/",
+      "tipo": "guia",
+      "slug": "result-files",
+      "titulo": "Result Files"
+    }
+  }
+}
